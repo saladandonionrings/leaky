@@ -1,0 +1,152 @@
+/* ************************** */
+/* *************************************** */
+/* DO NOT ADD ANYTHING BEFORE THIS COMMENT */
+/* *************************************** */
+body {
+  padding-top: 15px;
+}
+
+.footer {
+  padding-top: 40px;
+  padding-bottom: 40px;
+  margin-top: 40px;
+}
+
+.jumbotron {
+  text-align: center;
+  background-color: transparent;
+}
+
+.search {
+  width: 50%;
+  height: 40px;
+  font-size: 18px;
+  border-radius: 5px;
+  border-color: #fff;
+  margin: 0 auto;
+}
+
+.jumbotron .btn {
+  padding: 14px 24px;
+  font-size: 21px;
+  background-color: #155A8C;
+  border:none;
+  display: block;
+  width: 150px;
+  margin: 20px auto;
+}
+
+.pagination-link {
+  padding: 8px 16px;
+  font-size: 15px;
+  background-color: #1971AC;
+  border:none;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.pagination-link:hover {
+  background-color: #488DBF;
+}
+
+.jumbotron .btn:hover {
+  background-color: #488DBF;
+  border-color: #488DBF;
+}
+
+.export-btn{
+  text-decoration: none;
+  padding: 6px 16px;
+  font-size: 15px;
+  background-color: red;
+  border:none;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin:left;
+}
+
+.export-btn:hover {
+  text-decoration: none;
+  color:#fff;
+  background-color: #FF8888;
+  border-color: #FF8888;
+}
+
+.navbar {
+  background-image: -webkit-linear-gradient(top, #155A8C 0%,#488DBF 100%);
+  background-image: -o-linear-gradient(top, #155A8C 0%,#488DBF 100%);
+  background-image: linear-gradient(to bottom, #155A8C 0%,#488DBF 100%);
+  border: 1px solid #e5e5e5;
+ -webkit-text-fill-color: #ffffff;
+}
+
+.nav-link {
+  color: #FFFFFF;
+}
+
+.nav-item:hover{
+  background-color: #488DBF;
+}
+
+.sr-only {
+  color:#ccc;
+}
+
+@media (min-width: 768px) {
+  .navbar-nav {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+  }
+
+  .navbar-nav .nav-item {
+    -webkit-box-flex: 1;
+    -webkit-flex: 1 0 auto;
+        -ms-flex: 1 0 auto;
+            flex: 1 0 auto;
+  }
+}
+
+/* Responsive: Portrait tablets and up */
+@media screen and (min-width: 768px) {
+  /* Remove the padding we set earlier */
+  .masthead,
+  .marketing,
+  .footer {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+
+.addLeaks {
+  font-size: 0.85em;
+  background: #98cef5;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+td, th {
+  padding: 8px;
+  text-align: left;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+tr:hover {
+  background-color: #e6e6e6;
+}
+
+th {
+  background-color: #333;
+  color: white;
+}
