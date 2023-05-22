@@ -28,7 +28,7 @@ sudo ./install.sh
 ```
 
 ### Usage
-- Make sure your leak file content is email:password
+- Make sure your leak file content is **email:password**
 
 ```bash
 # escape weird characters
@@ -49,11 +49,15 @@ python3 scraper.py
 - **Upload** : upload your own leak file into the mongodb instance and watch it being implemented into the web service
 
 ### Screenshots
-**Search :**
+
+**Search :** 
+![leak-search](https://github.com/saladandonionrings/leaky/assets/61053314/cb17b83e-9d67-4b79-9f06-5e1f2cd8612d)
 
 **List of Leaks :**
+![list-leaks](https://github.com/saladandonionrings/leaky/assets/61053314/1b1020a1-a9dd-4691-ba18-1aadc2f28655)
 
 **Upload :**
+![upload](https://github.com/saladandonionrings/leaky/assets/61053314/94c36e91-e46f-4b46-9a45-074f6d26270d)
 
 
 ## Credits
