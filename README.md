@@ -22,8 +22,8 @@ sudo systemctl daemon-reload
 sudo systemctl status mongod
 
 # install project
-git clone 
-cd leakScraper
+git clone https://github.com/saladandonionrings/leaky.git
+cd leaky
 sudo ./install.sh
 ```
 
