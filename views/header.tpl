@@ -4,7 +4,7 @@
 		<meta charset="utf-8" />
 		<meta charset="utf-8">
     	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<title>Leaks</title>
+		<title>leaky</title>
 		<link rel="stylesheet" href="/static/css/style.css" />
 		<link rel="stylesheet" href="/static/css/bootstrap.min.css"  />
 	</head>
@@ -12,7 +12,7 @@
 	    <div class="container">
 
 	      <div class="masthead">
-	        <h3 class="text-muted">Leaks</h3>
+	        <h3 class="text-muted">leaky</h3>
 
 	        <nav class="navbar navbar-expand-md navbar-light bg-light rounded mb-3">
 	          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
