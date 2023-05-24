@@ -1,9 +1,13 @@
-# leaky
-[![Python 3.5|3.6](https://img.shields.io/badge/python-3.x-green.svg)](https://www.python.org/) [![License](https://img.shields.io/badge/license-GPLv3-red.svg)](https://raw.githubusercontent.com/almandin/fuxploider/master/LICENSE.md)
+# leaky :key:
+[![Python 3.5|3.6](https://img.shields.io/badge/python-3.x-green.svg)](https://www.python.org/) 
+[![License](https://img.shields.io/badge/license-GPLv3-red.svg)](https://raw.githubusercontent.com/almandin/fuxploider/master/LICENSE.md)
 
-Leaky is a robust suite of tools engineered for the processing and visualization of substantial text files containing credentials. Designed to aid pentesters and redteamers in their OSINT, credentials gathering, and credentials stuffing assaults, these tools deliver efficiency in handling massive amounts of data.
+Leaky is a potent arsenal of tools designed for parsing and visualizing colossal text files laden with credentials. Built with the goal to aid penetration testers and redteamers in OSINT, credentials gathering, and credential stuffing attacks, this suite delivers an efficient way to manage a sea of data.
 
-### Installation
+## :gear: Installation
+
+You can install Leaky and its prerequisites using the following commands:
+
 ```bash
 # install mongodb
 sudo apt-get install gnupg
@@ -27,8 +31,8 @@ cd leaky
 sudo ./install.sh
 ```
 
-### Usage
-- Make sure your leak file content is **email:password**
+### :rocket: Usage
+Leaky requires your leak file content in the **email:password** format. Follow these steps:
 
 ```bash
 # escape weird characters
@@ -43,12 +47,14 @@ python3 import.py <file> <leak_name> <leak_date>
 # start web instance on port 9999
 python3 scraper.py
 ```
-### Functionalities
-- **Search** : search for domain name and/or name of one person
-- **List of Leaks** : list of leaks implemented (name, number of credentials, date, remove)
-- **Upload** : upload your own leak file into the mongodb instance and watch it being implemented into the web service
+### :mag_right: Functionalities
+Leaky provides the following capabilities:
 
-### Screenshots
+* **Search** : Find domain names or individuals.
+* **List of Leaks** : Access the directory of leaks (includes name, number of credentials, date, remove).
+* **Upload** : Integrate your own leak file into the mongodb instance and watch it reflect on the web service.
+
+### :camera: Screenshots
 
 **Search :** 
 ![leak-search](https://github.com/saladandonionrings/leaky/assets/61053314/cb17b83e-9d67-4b79-9f06-5e1f2cd8612d)
@@ -60,5 +66,5 @@ python3 scraper.py
 ![upload](https://github.com/saladandonionrings/leaky/assets/61053314/94c36e91-e46f-4b46-9a45-074f6d26270d)
 
 
-## Credits
-This project is based on ACCEIS' LeakScraper https://github.com/Acceis/leakScraper
+## :star2: Credits
+This project is built upon the foundational work of ACCEIS' LeakScraper. Visit their GitHub repository for more information : https://github.com/Acceis/leakScraper
