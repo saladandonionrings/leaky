@@ -4,7 +4,7 @@
 		<meta charset="utf-8" />
 		<meta charset="utf-8">
     	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<title>Leaks Login</title>
+		<title>Leaky Login</title>
 		<link rel="stylesheet" href="/static/css/bootstrap.min.css" />
 		<style>
 			.masthead {
@@ -25,5 +25,5 @@
 	    <div class="container">
 
 	      <div class="masthead">
-	        <h3 class="text-muted">Leaks Login</h3>
+	        <h3 class="text-muted">Leaky Login</h3>
 	      </div>
