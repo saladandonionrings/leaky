@@ -18,7 +18,7 @@
 			  <tr>
 			    <td>{{ l["name"] }}</td>
 			    <td>{{ l["imported"] }}</td>
-			    <td>{{ l["date"] }}</td>  <!-- Display the Date value -->
+			    <td>{{ l["date"] }}</td> 
 			    <td><b><a style="color:red;text-decoration:none;" href="/removeLeak?id={{ l["id"] }}">X</a></b></td>
 			  </tr>
 			  % end
