@@ -20,12 +20,10 @@
     <p><input type="submit" value="Lookup" role="button" class="btn btn-lg btn-success"/></p>
   </form>
 
-  <!-- Rest of the code -->
 
   <b class="nb">
     Results: <span style="color: red;">{{ nbRes }}</span>
   </b>
-  <!-- ...remaining code... -->
 
 
   <script>
