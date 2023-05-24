@@ -10,9 +10,6 @@
     <p><input type="text" name="leakDate" placeholder="Leak Date (YYYY)" required/></p>
     <p><input type="submit" value="Upload" role="button" class="btn btn-lg btn-primary"/></p>
   </form>
-  <!-- Rest of your HTML code -->
-
-<!-- Rest of your HTML code -->
 
 </div>
 
