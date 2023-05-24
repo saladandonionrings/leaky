@@ -2,7 +2,7 @@
 
 <!-- Jumbotron -->
 <div class="jumbotron">
-  <h1>Leaks Looker</h1>
+  <h1>Leaks Search</h1>
   <p class="lead">Search within <b style="color: red;">{{count}} credentials</b> in the database.</p>
   <form id="searchForm" method="GET" action="/index">
     <p><input id="dInput" type="text" class="search" style="width:100%;height:60px;font-size:25px;" name="d" placeholder="Domain : (e.g. : yahoo.com)"/></p>
