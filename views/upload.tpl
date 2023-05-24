@@ -2,7 +2,7 @@
 
 <!-- Jumbotron -->
 <div class="jumbotron">
-  <h1>Upload Leak Data</h1>
+  <h1>Upload Leak File</h1>
   <form method="POST" action="/upload" enctype="multipart/form-data">
   <p>Only <b>.txt</b> files : email:password<p>
     <p><input type="file" name="file" accept=".txt" required/></p>
