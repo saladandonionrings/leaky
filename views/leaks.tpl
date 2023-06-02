@@ -11,7 +11,7 @@
 			  <tr>
 			    <th>Name</th>
 			    <th>Number of credentials</th>
-			    <th>Date</th>  <!-- Add the Date column -->
+			    <th>Date</th>  
 			    <th>Remove</th>
 			  </tr>
 			  % for l in leaks:
