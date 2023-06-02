@@ -4,29 +4,17 @@
 <div class="jumbotron">
   <h1>Leaks Looker</h1>
   <p class="lead">Search within <b style="color: red;">{{count}} credentials</b> in the database.</p>
-  <form id="searchForm" method="GET" action="/">
+  <form id="searchForm" method="GET" action="/index">
     <p><input id="dInput" type="text" class="search" style="width:100%;height:60px;font-size:25px;" name="d" placeholder="Domain : (e.g. : yahoo.com)"/></p>
     <p><input id="pInput" type="text" class="search" style="width:100%;height:60px;font-size:25px;" name="p" placeholder="Name : (e.g. john.doe)"/></p>
-    <p>
-      <select id="dateInput" class="search" style="width:100%;height:40px;font-size:18px;" name="date">
-        <option value="">All Years</option>
-        % for year in distinct_dates:
-          <option value="{{ year }}">{{ year }}</option>
-        % end
-      </select>
-    </p>
 
 
     <p><input type="submit" value="Lookup" role="button" class="btn btn-lg btn-success"/></p>
   </form>
 
-  <!-- Rest of the code -->
-
   <b class="nb">
     Results: <span style="color: red;">{{ nbRes }}</span>
-  </b>
-  <!-- ...remaining code... -->
-
+  </b><br>
 
   <script>
     window.onload = function() {
@@ -37,7 +25,6 @@
       var pageParam = urlParams.get('page');
       document.getElementById('dInput').value = dParam ? dParam : '';
       document.getElementById('pInput').value = pParam ? pParam : '';
-      document.getElementById('dateInput').value = dateParam.length > 0 ? dateParam[dateParam.length - 1] : '';  // Use the last 'date' parameter
 
       var form = document.getElementById('searchForm');
 
@@ -46,12 +33,6 @@
       pageInput.name = 'page';
       pageInput.value = pageParam ? pageParam : '1';
       form.appendChild(pageInput);
-
-      var dateInput = document.createElement('input');
-      dateInput.type = 'hidden';
-      dateInput.name = 'date';
-      dateInput.value = dateParam.length > 0 ? dateParam[dateParam.length - 1] : '';  // Use the last 'date' parameter
-      form.appendChild(dateInput);
 
       var paginationLinks = document.getElementsByClassName('pagination-link');
       console.log(paginationLinks.length + " pagination links found");
@@ -71,7 +52,7 @@
   <br><a href="/export?d={{ query['d'] }}&p={{ query['p'] }}" class="export-btn">Export</a>
 </div>
 <div style="text-align: right;">
-
+  <p class="page">Pages : {{page}} / {{total}} </p>
   <button class="pagination-link" data-page="{{prevPage}}">Previous</button>
   <button class="pagination-link" data-page="{{nextPage}}">Next</button>
 
@@ -95,3 +76,4 @@
   % end
 </table>
 % end
+% include("footer")
