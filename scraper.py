@@ -15,9 +15,11 @@ import secrets
 import threading
 from bottle import Bottle, route, run, template, request, redirect
 from bottle.ext import session
+from math import ceil
 
 
-mongo_database = "DBleaks"
+
+mongo_database = "leakScraper"
 
 # setup session options
 session_opts = {
@@ -30,15 +32,12 @@ app = Bottle()
 plugin = session.SessionPlugin(cookie_lifetime=600)
 app.install(plugin)
 
-upload_folder = "uploads/"
-
-
 @hook('before_request')
 def setup_request():
     request.session = request.environ['beaker.session']
 
 @app.route('/', method='GET')
-@view('views/login.tpl')  # Assuming you have a login.tpl file in the views folder
+@view('views/login.tpl')  
 def login():
 
     return template('login',failed=False)
@@ -55,7 +54,7 @@ def do_login(session):
     user = db['users'].find_one({'username': username})
 
     if user and pbkdf2_sha256.verify(password, user['password']):
-        session['authenticated'] = int(True)  # Store the boolean value as an integer
+        session['authenticated'] = int(True) 
         return redirect('/index')
     else:
         return template('login', failed=True)
@@ -72,9 +71,6 @@ def logout():
     redirect('/')
 
 
-
-
-# Your routes with added session check
 @app.route('/index', method='GET')
 @view('views/index.tpl')
 def index(session):
@@ -85,7 +81,6 @@ def index(session):
         query = request.query.search
         domain_query = request.query.d
         name_query = request.query.p
-        date_query = request.query.getall('date')  # Get all 'date' parameters as a list
         page_number = int(request.query.page or 1)
         page_size = 250
 
@@ -108,26 +103,17 @@ def index(session):
         if name_query:
             query_conditions["p"] = {"$regex": re.escape(name_query)}
 
-        # Handle date query
-        if date_query:
-            if date_query == "All Years":
-                query_conditions.pop("date", None)  # Remove the date query condition
-            else:
-                date_query = [int(date) for date in date_query if date.isdigit()]
-                if date_query:
-                    query_conditions["date"] = {"$in": date_query}
-
         creds = []
         nbRes = 0
 
-        if query or domain_query or name_query or date_query:
+        if query or domain_query or name_query :
             skip = (page_number - 1) * page_size
             creds = [document for document in credentials.find(query_conditions).skip(skip).limit(page_size)]
             nbRes = credentials.count_documents(query_conditions)
 
         count = credentials.count_documents({})
         count = '{:,}'.format(count).replace(',', ' ')
-
+        total_pages = ceil(nbRes / page_size)
         prevPage = max(1, page_number - 1)
         nextPage = page_number + 1
         # Get distinct date values from the database
@@ -140,10 +126,10 @@ def index(session):
                 "search": query,
                 "d": domain_query,
                 "p": name_query,
-                "date": date_query
             },
             nbRes=nbRes,
             page=page_number,
+            total=total_pages,
             prevPage=prevPage,
             nextPage=nextPage,
             distinct_dates=distinct_dates
@@ -172,7 +158,7 @@ def getLeaks(session):
                     "id": leak_id,
                     "imported": '{:,}'.format(int(imported_count)).replace(',', ' '),
                     "name": leak["name"],
-                    "date": leak.get("date", "")  # Set date to empty string if missing
+                    "date": leak.get("date", "") 
                 }
                 leaksa.append(leak_info)
 
@@ -207,7 +193,7 @@ def export(session):
             output.seek(0)
 
             response.content_type = 'application/force-download; UTF-8'
-            response.set_header("Content-Disposition", "attachment;filename=export-" + (domain_query or name_query) + ".txt")
+            response.set_header("Content-Disposition", "attachment;filename=creds-" + (domain_query or name_query) + ".txt")
 
             return output
         else:
@@ -218,6 +204,7 @@ def removeLeak(session):
     if 'authenticated' not in session or not session['authenticated']:
             redirect('/')
     else:
+
         if request.query.id:
             client = MongoClient()
             db = client[mongo_database]
@@ -227,8 +214,7 @@ def removeLeak(session):
             credentials.delete_many({"l": int(request.query.id)})
             leaks.delete_one({"id": int(request.query.id)})
             print("\tdone.")
-            redirect("/leaks")
-        
+        redirect("/")
 
 @app.route('/upload', method='GET')
 @view('views/upload.tpl')
@@ -249,12 +235,9 @@ def upload_file(session):
         leak_date = request.forms.get('leakDate')
         upload = request.files.get('file')
 
-
-        # Save the uploaded file
         filepath = os.path.join(upload_folder, upload.filename)
         upload.save(filepath, overwrite=True)
-
-        # Start a separate thread to run the leakImporter script as a subprocess
+        
         uploader = threading.Thread(target=run_leak_importer, args=(filepath, leak_name, leak_date))
         uploader.start()
 
@@ -262,42 +245,35 @@ def upload_file(session):
 
 def run_leak_importer(filepath, leak_name, leak_date):
     # Call the leakImporter script as a subprocess
-    cmd = ["python3", "import.py", filepath, leak_name, leak_date]
+    cmd = ["python3", "leakImporter-simple.py", filepath, leak_name, leak_date]
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-    # Create a log file to capture the script outputs
-    log_filename = "import.log"  # Provide a desired log file name
+    log_filename = "leak_import.log" 
     log_path = os.path.join(upload_folder, log_filename)
 
-    # Read and log the subprocess outputs
     with open(log_path, "w") as log_file:
         while proc.poll() is None:
-            time.sleep(1)  # Adjust the sleep duration as needed
+            time.sleep(1) 
 
-            # Read the subprocess outputs
             stdout = proc.stdout.readline()
             stderr = proc.stderr.readline()
 
-            # Write the outputs to the log file
             log_file.write(stdout.decode())
             log_file.write(stderr.decode())
 
-    # Wait for the subprocess to complete and read the final outputs
     stdout, stderr = proc.communicate()
     stdout = stdout.decode()
     stderr = stderr.decode()
 
-    # Write the final outputs to the log file
     with open(log_path, "a") as log_file:
         log_file.write(stdout)
         log_file.write(stderr)
 
-    # Perform any additional cleanup or processing
 
-    # Clean up the uploaded file and log file
+    uploader.join()
+
     os.remove(filepath)
     os.remove(log_path)
-
 
 
 
