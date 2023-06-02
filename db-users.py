@@ -11,7 +11,7 @@ users = db["users"]
 
 # List of users to be added
 user_list = [
-    {"username": "admin", "password": pbkdf2_sha256.hash("admin")},
+    {"username": "admin", "password": pbkdf2_sha256.hash("leaky")},
     # Add more users here...
 ]
 
