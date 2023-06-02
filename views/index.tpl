@@ -55,7 +55,7 @@
   <br><a href="/export?d={{ query['d'] }}&p={{ query['p'] }}" class="export-btn">Export</a>
 </div>
 <div style="text-align: right;">
-  <p class="page">Pages : {{total}} </p>
+  <p class="page">Pages : {{page}} / {{total}} </p>
   <button class="pagination-link" data-page="{{prevPage}}">Previous</button>
   <button class="pagination-link" data-page="{{nextPage}}">Next</button>
 
