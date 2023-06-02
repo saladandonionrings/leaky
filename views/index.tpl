@@ -79,3 +79,4 @@
   % end
 </table>
 % end
+% include("footer")
