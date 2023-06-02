@@ -19,7 +19,7 @@ from math import ceil
 
 
 
-mongo_database = "DBLeaks"
+mongo_database = "DBleaks"
 
 # setup session options
 session_opts = {
