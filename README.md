@@ -36,7 +36,7 @@ Leaky requires your leak file content in the **email:password** format. Follow t
 
 ```bash
 # escape weird characters
-python3 clear-file.py -i <input_file> -o <output_file>
+python3 clean-file.py -i <input_file> -o <output_file>
 
 # change creds for users in db-users.py ; default : admin:admin
 python3 db-users.py 
