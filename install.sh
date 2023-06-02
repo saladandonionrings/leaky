@@ -10,3 +10,5 @@ db="DBleaks"
 mongo --eval "db.credentials.createIndex({\"d\":\"hashed\"})" "$db" > /dev/null 2>&1
 mongo --eval "db.credentials.createIndex({\"l\":\"hashed\"})" "$db" > /dev/null 2>&1
 mongo --eval "db.createCollection(\"leaks\")" "$db" > /dev/null 2>&1
+
+python3 db-users.py
