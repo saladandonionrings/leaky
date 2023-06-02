@@ -19,25 +19,28 @@ from math import ceil
 
 
 
-mongo_database = "DBleaks"
+mongo_database = "leakScraper"
 
 # setup session options
 session_opts = {
     'session.type': 'memory',
-    'session.cookie_expires': 300,
+    'session.cookie_expires': 3000,
     'session.auto': True,
 }
 
 app = Bottle()
-plugin = session.SessionPlugin(cookie_lifetime=600)
+plugin = session.SessionPlugin(cookie_lifetime=1200)
 app.install(plugin)
+
+# Middleware for sessions
+#app = SessionMiddleware(app())
 
 @hook('before_request')
 def setup_request():
     request.session = request.environ['beaker.session']
 
 @app.route('/', method='GET')
-@view('views/login.tpl')  
+@view('views/login.tpl')  # Assuming you have a login.tpl file in the views folder
 def login():
 
     return template('login',failed=False)
@@ -54,7 +57,7 @@ def do_login(session):
     user = db['users'].find_one({'username': username})
 
     if user and pbkdf2_sha256.verify(password, user['password']):
-        session['authenticated'] = int(True) 
+        session['authenticated'] = int(True)  # Store the boolean value as an integer
         return redirect('/index')
     else:
         return template('login', failed=True)
@@ -71,6 +74,9 @@ def logout():
     redirect('/')
 
 
+
+
+# Your routes with added session check
 @app.route('/index', method='GET')
 @view('views/index.tpl')
 def index(session):
@@ -158,7 +164,7 @@ def getLeaks(session):
                     "id": leak_id,
                     "imported": '{:,}'.format(int(imported_count)).replace(',', ' '),
                     "name": leak["name"],
-                    "date": leak.get("date", "") 
+                    "date": leak.get("date", "")  # Set date to empty string if missing
                 }
                 leaksa.append(leak_info)
 
@@ -214,7 +220,7 @@ def removeLeak(session):
             credentials.delete_many({"l": int(request.query.id)})
             leaks.delete_one({"id": int(request.query.id)})
             print("\tdone.")
-        redirect("/")
+        redirect("/leaks")
 
 @app.route('/upload', method='GET')
 @view('views/upload.tpl')
@@ -234,10 +240,12 @@ def upload_file(session):
         leak_name = request.forms.get('leakName')
         leak_date = request.forms.get('leakDate')
         upload = request.files.get('file')
-
+        upload_folder = "uploads"
+        # Save the uploaded file
         filepath = os.path.join(upload_folder, upload.filename)
         upload.save(filepath, overwrite=True)
-        
+
+        # Start a separate thread to run the leakImporter script as a subprocess
         uploader = threading.Thread(target=run_leak_importer, args=(filepath, leak_name, leak_date))
         uploader.start()
 
@@ -248,30 +256,35 @@ def run_leak_importer(filepath, leak_name, leak_date):
     cmd = ["python3", "leakImporter-simple.py", filepath, leak_name, leak_date]
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-    log_filename = "leak_import.log" 
+    # Create a log file to capture the script outputs
+    log_filename = "leak_import.log"  # Provide a desired log file name
+    upload_folder = "uploads"
     log_path = os.path.join(upload_folder, log_filename)
 
+    # Read and log the subprocess outputs
     with open(log_path, "w") as log_file:
         while proc.poll() is None:
-            time.sleep(1) 
+            time.sleep(1)  # Adjust the sleep duration as needed
 
+            # Read the subprocess outputs
             stdout = proc.stdout.readline()
             stderr = proc.stderr.readline()
 
+            # Write the outputs to the log file
             log_file.write(stdout.decode())
             log_file.write(stderr.decode())
 
+    # Wait for the subprocess to complete and read the final outputs
     stdout, stderr = proc.communicate()
     stdout = stdout.decode()
     stderr = stderr.decode()
 
+    # Write the final outputs to the log file
     with open(log_path, "a") as log_file:
         log_file.write(stdout)
         log_file.write(stderr)
 
-
-    uploader.join()
-
+    # Clean up the uploaded file and log file
     os.remove(filepath)
     os.remove(log_path)
 
@@ -296,4 +309,4 @@ def enable_protection():
     response.remove_header('X-Powered-By')
 
 
-run(app=app, host="127.0.0.1", port=9999)
+run(app=app, host="192.168.20.214", port=9999)
