@@ -1,20 +1,16 @@
-/* ************************** */
-/* *************************************** */
-/* DO NOT ADD ANYTHING BEFORE THIS COMMENT */
-/* *************************************** */
 body {
   padding-top: 15px;
-}
-
-.footer {
-  padding-top: 40px;
-  padding-bottom: 40px;
-  margin-top: 40px;
+  background-image: -webkit-linear-gradient(top, #000000 0%,#111111 100%);
+  background-image: -o-linear-gradient(top, #000000 0%,#111111 100%);
+  background-image: linear-gradient(to bottom, #000000 0%,#111111 100%);
 }
 
 .jumbotron {
   text-align: center;
-  background-color: transparent;
+  background-image: -webkit-linear-gradient(top, #333333 0%,#444444 100%);
+  background-image: -o-linear-gradient(top, #333333 0%,#444444 100%);
+  background-image: linear-gradient(to bottom, #333333 0%,#444444 100%);
+  color:#fff;
 }
 
 .search {
@@ -22,37 +18,40 @@ body {
   height: 40px;
   font-size: 18px;
   border-radius: 5px;
-  border-color: #fff;
+  border-color: #FFFFFF;
   margin: 0 auto;
+  background-color: #555555;
+  color: #fff;
 }
 
 .jumbotron .btn {
   padding: 14px 24px;
   font-size: 21px;
-  background-color: #155A8C;
+  background-color: #7F0000;
   border:none;
   display: block;
   width: 150px;
   margin: 20px auto;
+  color: #FFFFFF;
 }
 
 .pagination-link {
   padding: 8px 16px;
   font-size: 15px;
-  background-color: #1971AC;
+  background-color: #7F7F7F;
   border:none;
-  color: #fff;
+  color: #FFFFFF;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
 .pagination-link:hover {
-  background-color: #488DBF;
+  background-color: #BFBFBF;
 }
 
 .jumbotron .btn:hover {
-  background-color: #488DBF;
-  border-color: #488DBF;
+  background-color: #BFBFBF;
+  border-color: #BFBFBF;
 }
 
 .export-btn{
@@ -61,7 +60,7 @@ body {
   font-size: 15px;
   background-color: red;
   border:none;
-  color: #fff;
+  color: #FFFFFF;
   cursor: pointer;
   transition: background-color 0.3s ease;
   margin:left;
@@ -69,15 +68,18 @@ body {
 
 .export-btn:hover {
   text-decoration: none;
-  color:#fff;
+  color:#FFFFFF;
   background-color: #FF8888;
   border-color: #FF8888;
 }
 
+.page{
+  color:#fff;
+  }
 .navbar {
-  background-image: -webkit-linear-gradient(top, #155A8C 0%,#488DBF 100%);
-  background-image: -o-linear-gradient(top, #155A8C 0%,#488DBF 100%);
-  background-image: linear-gradient(to bottom, #155A8C 0%,#488DBF 100%);
+  background-image: -webkit-linear-gradient(top, #000000 0%,#333333 100%);
+  background-image: -o-linear-gradient(top, #000000 0%,#333333 100%);
+  background-image: linear-gradient(to bottom, #000000 0%,#333333 100%);
   border: 1px solid #e5e5e5;
  -webkit-text-fill-color: #ffffff;
 }
@@ -87,7 +89,7 @@ body {
 }
 
 .nav-item:hover{
-  background-color: #488DBF;
+  background-color: #333333;
 }
 
 .sr-only {
@@ -110,9 +112,7 @@ body {
   }
 }
 
-/* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
-  /* Remove the padding we set earlier */
   .masthead,
   .marketing,
   .footer {
@@ -123,30 +123,35 @@ body {
 
 .addLeaks {
   font-size: 0.85em;
-  background: #98cef5;
+  background: #333333;
   padding: 15px;
   border-radius: 5px;
+  color: #FFFFFF;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
+  color: #FFFFFF;
 }
 
 td, th {
   padding: 8px;
   text-align: left;
+  color: #FFFFFF;
+  background-color: #333333;
 }
 
 tr:nth-child(even) {
-  background-color: #f2f2f2;
+  background-color: #444444;
 }
 
-tr:hover {
-  background-color: #e6e6e6;
+tr:hover td {
+  background-color: #555555;
 }
+
 
 th {
-  background-color: #333;
-  color: white;
+  background-color: #000000;
+  color: #FFFFFF;
 }
