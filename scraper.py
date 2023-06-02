@@ -253,7 +253,7 @@ def upload_file(session):
 
 def run_leak_importer(filepath, leak_name, leak_date):
     # Call the leakImporter script as a subprocess
-    cmd = ["python3", "leakImporter-simple.py", filepath, leak_name, leak_date]
+    cmd = ["python3", "importer.py", filepath, leak_name, leak_date]
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Create a log file to capture the script outputs
