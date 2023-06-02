@@ -4,20 +4,22 @@
 		<meta charset="utf-8" />
 		<meta charset="utf-8">
     	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<title>Leaky Login</title>
+		<title>Leaks Login</title>
 		<link rel="stylesheet" href="/static/css/bootstrap.min.css" />
 		<style>
 			.masthead {
-				background-color: #1971AC;
+				background-image: -webkit-linear-gradient(top, #111111 0%,#444444 100%);
+				background-image: -o-linear-gradient(top, #111111 0%,#444444 100%);
+				background-image: linear-gradient(to bottom, #111111 0%,#444444 100%);
 				padding: 20px;
 				text-align: center;
-				color: #FFFFFF;
+				-webkit-text-fill-color: #ffffff;
 				margin-bottom: 30px;
 			}
 
 			.masthead h3 {
 				margin: 0;
-				color: white;
+				-webkit-text-fill-color: #ffffff;
 			}
 		</style>
 	</head>
@@ -25,5 +27,5 @@
 	    <div class="container">
 
 	      <div class="masthead">
-	        <h3 class="text-muted">Leaky Login</h3>
+	        <h3 class="text-muted">Leaks Login</h3>
 	      </div>
