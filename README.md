@@ -38,13 +38,13 @@ Leaky requires your leak file content in the **email:password** format. Follow t
 # escape weird characters
 python3 clean-file.py -i <input_file> -o <output_file>
 
-# change creds for users in db-users.py ; default : admin:admin
+# change creds for users in db-users.py
 python3 db-users.py 
 
 # import the file into mongodb
 python3 import.py <file> <leak_name> <leak_date>
 
-# start web instance on port 9999
+# start web instance on port 9999 ; default creds -> admin:leaky
 python3 scraper.py
 ```
 ### :mag_right: Functionalities
