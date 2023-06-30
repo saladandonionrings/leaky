@@ -44,7 +44,7 @@ python3 db-users.py
 # import the file into mongodb
 python3 import.py <file> <leak_name> <leak_date>
 
-# start web instance on port 9999 ; default creds -> admin:leaky
+# start web instance on port 9999 ; default creds -> leaky:leaky
 python3 scraper.py
 ```
 ### :mag_right: Functionalities
