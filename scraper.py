@@ -17,30 +17,27 @@ from bottle import Bottle, route, run, template, request, redirect
 from bottle.ext import session
 from math import ceil
 
-
-
 mongo_database = "Dbleaks"
 
-# setup session options
+# session
 session_opts = {
     'session.type': 'memory',
     'session.cookie_expires': 3000,
     'session.auto': True,
+    'session.secure': True,
+    'session.httponly': True, 
 }
 
 app = Bottle()
-plugin = session.SessionPlugin(cookie_lifetime=1200)
+plugin = session.SessionPlugin(cookie_lifetime=1800)
 app.install(plugin)
-
-# Middleware for sessions
-#app = SessionMiddleware(app())
 
 @hook('before_request')
 def setup_request():
     request.session = request.environ['beaker.session']
 
 @app.route('/', method='GET')
-@view('views/login.tpl')  # Assuming you have a login.tpl file in the views folder
+@view('views/login.tpl')
 def login():
 
     return template('login',failed=False)
@@ -63,30 +60,22 @@ def do_login(session):
         return template('login', failed=True)
 
 
-
-# Logout route
 @app.route('/logout')
 def logout():
     session = {}
-    # Delete session cookie by setting its expiration to a past date
     response.set_cookie('bottle.session', '', expires=0)
-
     redirect('/')
 
-
-
-
-# Your routes with added session check
 @app.route('/index', method='GET')
 @view('views/index.tpl')
 def index(session):
     if 'authenticated' not in session or not session['authenticated']:
-            redirect('/')
+        redirect('/')
     else:
-
         query = request.query.search
         domain_query = request.query.d
         name_query = request.query.p
+        leak_name = request.query.leakname  # Retrieve the selected leak name from the query parameters
         page_number = int(request.query.page or 1)
         page_size = 250
 
@@ -94,7 +83,6 @@ def index(session):
         db = client[mongo_database]
         credentials = db["credentials"]
 
-        # Create text index
         credentials.create_index([("d", "text"), ("p", "text"), ("P", "text")])
         credentials.create_index([("date", 1)])
 
@@ -109,10 +97,16 @@ def index(session):
         if name_query:
             query_conditions["p"] = {"$regex": re.escape(name_query)}
 
+        if leak_name:
+            if leak_name == "All Leaks":
+                query_conditions["leakname"] = {"$exists": True}  # Filter documents with the "leakname" field
+            else:
+                query_conditions["leakname"] = leak_name
+
         creds = []
         nbRes = 0
 
-        if query or domain_query or name_query :
+        if query or domain_query or name_query or leak_name:
             skip = (page_number - 1) * page_size
             creds = [document for document in credentials.find(query_conditions).skip(skip).limit(page_size)]
             nbRes = credentials.count_documents(query_conditions)
@@ -122,7 +116,6 @@ def index(session):
         total_pages = ceil(nbRes / page_size)
         prevPage = max(1, page_number - 1)
         nextPage = page_number + 1
-        # Get distinct date values from the database
         distinct_dates = sorted(credentials.distinct("date"), reverse=True)
 
         return dict(
@@ -132,14 +125,16 @@ def index(session):
                 "search": query,
                 "d": domain_query,
                 "p": name_query,
+                "leakname": leak_name,
             },
             nbRes=nbRes,
             page=page_number,
             total=total_pages,
             prevPage=prevPage,
             nextPage=nextPage,
-            distinct_dates=distinct_dates
+            distinct_dates=distinct_dates,
         )
+
 
 @app.route('/leaks', method="GET")
 @view('views/leaks.tpl')
@@ -253,7 +248,7 @@ def upload_file(session):
 
 def run_leak_importer(filepath, leak_name, leak_date):
     # Call the leakImporter script as a subprocess
-    cmd = ["python3", "importer.py", filepath, leak_name, leak_date]
+    cmd = ["python3", "leakImporter-simple.py", filepath, leak_name, leak_date]
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Create a log file to capture the script outputs
@@ -279,12 +274,10 @@ def run_leak_importer(filepath, leak_name, leak_date):
     stdout = stdout.decode()
     stderr = stderr.decode()
 
-    # Write the final outputs to the log file
     with open(log_path, "a") as log_file:
         log_file.write(stdout)
         log_file.write(stderr)
 
-    # Clean up the uploaded file and log file
     os.remove(filepath)
     os.remove(log_path)
 
@@ -299,14 +292,13 @@ def send_static_js(filename):
     return static_file(filename, root='./views/js/')
 
 
-
-@hook('after_request')
+@app.hook('after_request')
 def enable_protection():
     response.headers['X-Frame-Options'] = 'SAMEORIGIN'
-    response.headers['X-XSS-Protection'] = '1; mode=block'
-    response.headers['Content-Security-Policy'] = "default-src 'self'"
-    response.remove_header('Server')
-    response.remove_header('X-Powered-By')
+    response.headers['Content-Security-Policy'] = "default-src 'self' 'unsafe-inline'"
+    response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+    response.headers['Server'] = 'Leaky'
+    response.headers['X-Powered-By'] = 'Leaky'
 
 
-run(app=app, host="192.168.20.214", port=9999)
+run(app=app, host="127.0.0.1", port=9999)
