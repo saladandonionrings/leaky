@@ -6,7 +6,6 @@ import math
 import re
 from bottle import static_file
 import io
-import re
 import datetime
 import subprocess
 import os
