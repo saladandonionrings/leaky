@@ -60,11 +60,15 @@ def do_login(session):
         return template('login', failed=True)
 
 
+# Logout route
 @app.route('/logout')
 def logout():
     session = {}
+    # Delete session cookie by setting its expiration to a past date
     response.set_cookie('bottle.session', '', expires=0)
+
     redirect('/')
+
 
 @app.route('/index', method='GET')
 @view('views/index.tpl')
@@ -75,14 +79,20 @@ def index(session):
         query = request.query.search
         domain_query = request.query.d
         name_query = request.query.p
-        leak_name = request.query.leakname  # Retrieve the selected leak name from the query parameters
-        page_number = int(request.query.page or 1)
+        leak_name = request.query.leakname
+        page_number = request.query.page or '1'
+        try:
+            page_number = int(page_number)
+        except ValueError:
+            page_number = 1
+
         page_size = 250
 
         client = MongoClient()
         db = client[mongo_database]
         credentials = db["credentials"]
 
+        # Create text index
         credentials.create_index([("d", "text"), ("p", "text"), ("P", "text")])
         credentials.create_index([("date", 1)])
 
@@ -125,7 +135,7 @@ def index(session):
                 "search": query,
                 "d": domain_query,
                 "p": name_query,
-                "leakname": leak_name,
+                "leakname": leak_name,  # Pass the leak name back to the template
             },
             nbRes=nbRes,
             page=page_number,
@@ -134,6 +144,7 @@ def index(session):
             nextPage=nextPage,
             distinct_dates=distinct_dates,
         )
+
 
 
 @app.route('/leaks', method="GET")
@@ -274,10 +285,12 @@ def run_leak_importer(filepath, leak_name, leak_date):
     stdout = stdout.decode()
     stderr = stderr.decode()
 
+    # Write the final outputs to the log file
     with open(log_path, "a") as log_file:
         log_file.write(stdout)
         log_file.write(stderr)
 
+    # Clean up the uploaded file and log file
     os.remove(filepath)
     os.remove(log_path)
 
@@ -290,6 +303,7 @@ def send_static_css(filename):
 @app.route('/static/js/<filename:path>')
 def send_static_js(filename):
     return static_file(filename, root='./views/js/')
+
 
 
 @app.hook('after_request')
