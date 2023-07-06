@@ -2,12 +2,11 @@
 
 <!-- Jumbotron -->
 <div class="jumbotron">
-  <h1>Leaks Looker</h1>
+  <h2>Lookup</h2>
   <p class="lead">Search within <b style="color: red;">{{count}} credentials</b> in the database.</p>
   <form id="searchForm" method="GET" action="/index">
-    <p><input id="dInput" type="text" class="search" style="width:100%;height:60px;font-size:25px;" name="d" placeholder="Domain : (e.g. : yahoo.com)"/></p>
-    <p><input id="pInput" type="text" class="search" style="width:100%;height:60px;font-size:25px;" name="p" placeholder="Name : (e.g. john.doe)"/></p>
-
+    <p><input id="dInput" type="text" class="search" style="width:100%;height:60px;font-size:25px;" name="d" placeholder="domain" /></p>
+    <p><input id="pInput" type="text" class="search" style="width:100%;height:60px;font-size:25px;" name="p" placeholder="name"/></p>
 
     <p><input type="submit" value="Lookup" role="button" class="btn btn-lg btn-success"/></p>
   </form>
@@ -16,12 +15,13 @@
     Results: <span style="color: red;">{{ nbRes }}</span>
   </b><br>
 
+
   <script>
     window.onload = function() {
       var urlParams = new URLSearchParams(window.location.search);
       var dParam = urlParams.get('d');
       var pParam = urlParams.get('p');
-      var dateParam = urlParams.getAll('date');  // Get all 'date' parameters as an array
+      var dateParam = urlParams.getAll('date');
       var pageParam = urlParams.get('page');
       document.getElementById('dInput').value = dParam ? dParam : '';
       document.getElementById('pInput').value = pParam ? pParam : '';
@@ -47,15 +47,15 @@
         });
       }
     }
+
   </script>
 
-  <br><a href="/export?d={{ query['d'] }}&p={{ query['p'] }}" class="export-btn">Export</a>
+  <br><a href="/export?d={{ query['d'] }}&p={{ query['p'] }}&leakname={{ query['leakname'] }}" class="export-btn">Export</a>
 </div>
 <div style="text-align: right;">
   <p class="page">Pages : {{page}} / {{total}} </p>
   <button class="pagination-link" data-page="{{prevPage}}">Previous</button>
   <button class="pagination-link" data-page="{{nextPage}}">Next</button>
-
 </div>
 
 <br>
@@ -76,4 +76,3 @@
   % end
 </table>
 % end
-% include("footer")
