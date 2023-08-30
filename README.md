@@ -61,10 +61,12 @@ Leaky provides the following capabilities:
 ### :camera: Screenshots
 
 **Search :** 
-![image](https://github.com/saladandonionrings/leaky/assets/61053314/35124ebf-f0fa-41dd-9b4b-8951eee6f0a5)
+![image](https://github.com/saladandonionrings/leaky/assets/61053314/61184e47-76b3-4bed-aa27-3693eac4240e)
+
 
 **List of Leaks :**
-![image](https://github.com/saladandonionrings/leaky/assets/61053314/8ca3e8f6-999a-4ad1-8291-e7852b095139)
+![image](https://github.com/saladandonionrings/leaky/assets/61053314/4ac43a69-3862-4dae-a8ca-4ae57fd1b941)
+
 
 **Upload :**
 ![image](https://github.com/saladandonionrings/leaky/assets/61053314/148c4b71-e1af-4f29-962e-ef604cb2c2a1)
