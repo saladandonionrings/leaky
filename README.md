@@ -39,16 +39,13 @@ sudo ./install.sh
 Leaky requires your leak file content in the **email:password** format. Follow these steps:
 
 ```bash
-# escape weird characters
+# escape weird characters from your txt file
 python3 clean-file.py -i <input_file> -o <output_file>
 
-# change creds for users in db-users.py
-python3 db-users.py 
-
-# import the file into mongodb
+# import the file into mongodb (not mandatory you can do it on the web)
 python3 import.py <file> <leak_name> <leak_date>
 
-# start web instance on port 9999 ; default creds -> leaky:leaky
+# start web instance on port 9999 ; default password -> leaky123
 python3 scraper.py
 ```
 ### :mag_right: Functionalities
