@@ -61,16 +61,13 @@ Leaky provides the following capabilities:
 ### :camera: Screenshots
 
 **Search :** 
-![image](https://github.com/saladandonionrings/leaky/assets/61053314/61184e47-76b3-4bed-aa27-3693eac4240e)
-
+![image](https://github.com/saladandonionrings/leaky/assets/61053314/bedbaca4-43f3-41b0-bee8-4360197f7413)
 
 **List of Leaks :**
-![image](https://github.com/saladandonionrings/leaky/assets/61053314/4ac43a69-3862-4dae-a8ca-4ae57fd1b941)
-
+![image](https://github.com/saladandonionrings/leaky/assets/61053314/93c7321a-1d48-4ba0-b34b-97970c3a7e12)
 
 **Upload :**
-![image](https://github.com/saladandonionrings/leaky/assets/61053314/148c4b71-e1af-4f29-962e-ef604cb2c2a1)
-
+![image](https://github.com/saladandonionrings/leaky/assets/61053314/9e050f53-e32a-46d9-aa97-613d75164572)
 
 ## :star2: Credits
 This project is built upon the foundational work of ACCEIS' LeakScraper. Visit their GitHub repository for more information : https://github.com/Acceis/leakScraper
