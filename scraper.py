@@ -1,78 +1,69 @@
 from pymongo import MongoClient
 from bottle import *
 from passlib.hash import pbkdf2_sha256
-from beaker.middleware import SessionMiddleware
 import math
 import re
-from bottle import static_file
 import io
 import datetime
 import subprocess
 import os
 import time
 import secrets
-import threading
-from bottle import Bottle, route, run, template, request, redirect
-from bottle.ext import session
-from math import ceil
+from math import ceil 
 
-mongo_database = "Dbleaks"
+secret_key = secrets.token_hex(16) 
 
-# session
-session_opts = {
-    'session.type': 'memory',
-    'session.cookie_expires': 3000,
-    'session.auto': True,
-    'session.secure': True,
-    'session.httponly': True, 
-}
+mongo_database = "DBleaks"
 
 app = Bottle()
-plugin = session.SessionPlugin(cookie_lifetime=1800)
-app.install(plugin)
-
-@hook('before_request')
-def setup_request():
-    request.session = request.environ['beaker.session']
 
 @app.route('/', method='GET')
 @view('views/login.tpl')
 def login():
-
-    return template('login',failed=False)
+    return template('login', failed=False)
 
 @app.route('/login', method='POST')
 @view('views/login.tpl')
-# Login route
-def do_login(session):
-    username = request.forms.get('username')
+def do_login():
     password = request.forms.get('password')
+    
+    if not password:
+        return template('login', failed=True)
 
     client = MongoClient()
     db = client[mongo_database]
-    user = db['users'].find_one({'username': username})
+    access = db['access'].find_one({'type': 'admin_password'})
+    
+    stored_password = access.get('password') if access else None
 
-    if user and pbkdf2_sha256.verify(password, user['password']):
-        session['authenticated'] = int(True)  # Store the boolean value as an integer
+    if not stored_password:
+        return template('login', failed=True)
+
+    if pbkdf2_sha256.verify(password, stored_password):
+        print("Password verified, setting cookie and redirecting")
+        response.set_cookie("authenticated", "true", secret=secret_key) 
         return redirect('/index')
     else:
         return template('login', failed=True)
 
 
-# Logout route
+
+def is_authenticated():
+    auth_cookie = request.get_cookie("authenticated", secret=secret_key)
+    print(f"Auth cookie: {auth_cookie}")
+    if auth_cookie:  
+        return True
+
 @app.route('/logout')
 def logout():
-    session = {}
-    # Delete session cookie by setting its expiration to a past date
-    response.set_cookie('bottle.session', '', expires=0)
-
+    response.delete_cookie('authenticated', secret=secret_key)
     redirect('/')
 
 
 @app.route('/index', method='GET')
 @view('views/index.tpl')
-def index(session):
-    if 'authenticated' not in session or not session['authenticated']:
+def index():
+    if not is_authenticated():
         redirect('/')
     else:
         query = request.query.search
@@ -108,7 +99,7 @@ def index(session):
 
         if leak_name:
             if leak_name == "All Leaks":
-                query_conditions["leakname"] = {"$exists": True}  # Filter documents with the "leakname" field
+                query_conditions["leakname"] = {"$exists": True}
             else:
                 query_conditions["leakname"] = leak_name
 
@@ -134,7 +125,7 @@ def index(session):
                 "search": query,
                 "d": domain_query,
                 "p": name_query,
-                "leakname": leak_name,  # Pass the leak name back to the template
+                "leakname": leak_name,
             },
             nbRes=nbRes,
             page=page_number,
@@ -144,15 +135,12 @@ def index(session):
             distinct_dates=distinct_dates,
         )
 
-
-
-@app.route('/leaks', method="GET")
+@app.route('/leaks', method='GET')
 @view('views/leaks.tpl')
-def getLeaks(session):
-    if 'authenticated' not in session or not session['authenticated']:
-            redirect('/')
+def getLeaks():
+    if not is_authenticated():
+        redirect('/')
     else:
-
         client = MongoClient()
         db = client[mongo_database]
         credentials = db["credentials"]
@@ -176,11 +164,10 @@ def getLeaks(session):
         return dict(count=count, nbLeaks=nbLeaks, leaks=leaksa)
 
 @app.route('/export', method='GET')
-def export(session):
-    if 'authenticated' not in session or not session['authenticated']:
-            redirect('/')
+def export():
+    if not is_authenticated():
+        redirect('/')
     else:
-
         domain_query = request.query.d
         name_query = request.query.p
 
@@ -210,12 +197,11 @@ def export(session):
         else:
             redirect("/")
 
-@app.route('/removeLeak', method="GET")
-def removeLeak(session):
-    if 'authenticated' not in session or not session['authenticated']:
-            redirect('/')
+@app.route('/removeLeak', method='GET')
+def removeLeak():
+    if not is_authenticated():
+        redirect('/')
     else:
-
         if request.query.id:
             client = MongoClient()
             db = client[mongo_database]
@@ -229,81 +215,66 @@ def removeLeak(session):
 
 @app.route('/upload', method='GET')
 @view('views/upload.tpl')
-def upload_form(session):
-    if 'authenticated' not in session or not session['authenticated']:
-            redirect('/login')
+def upload_form():
+    if not is_authenticated():
+        redirect('/')
     else:
         return {}
 
+def run_leak_importer(filepath, leak_name, leak_date):
+    cmd = ["python3", "import.py", filepath, leak_name, leak_date]
+    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    log_filename = "leak_import.log"
+    upload_folder = "uploads"
+    log_path = os.path.join(upload_folder, log_filename)
+
+    with open(log_path, "w") as log_file:
+        while proc.poll() is None:
+            stdout = proc.stdout.readline()
+            stderr = proc.stderr.readline()
+
+            log_file.write(stdout.decode())
+            log_file.write(stderr.decode())
+
+    stdout, stderr = proc.communicate()
+    stdout = stdout.decode()
+    stderr = stderr.decode()
+
+    with open(log_path, "a") as log_file:
+        log_file.write(stdout)
+        log_file.write(stderr)
+
+    os.remove(filepath)
+
+
 @app.route('/upload', method='POST')
 @view('views/upload.tpl')
-def upload_file(session):
-    if 'authenticated' not in session or not session['authenticated']:
-            redirect('/')
+def upload_file():
+    if not is_authenticated():
+        redirect('/')
     else:
-
         leak_name = request.forms.get('leakName')
         leak_date = request.forms.get('leakDate')
         upload = request.files.get('file')
         upload_folder = "uploads"
-        # Save the uploaded file
         filepath = os.path.join(upload_folder, upload.filename)
         upload.save(filepath, overwrite=True)
 
-        # Start a separate thread to run the leakImporter script as a subprocess
         uploader = threading.Thread(target=run_leak_importer, args=(filepath, leak_name, leak_date))
         uploader.start()
 
         return {}
 
-def run_leak_importer(filepath, leak_name, leak_date):
-    # Call the leakImporter script as a subprocess
-    cmd = ["python3", "leakImporter-simple.py", filepath, leak_name, leak_date]
-    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-    # Create a log file to capture the script outputs
-    log_filename = "leak_import.log"  # Provide a desired log file name
-    upload_folder = "uploads"
-    log_path = os.path.join(upload_folder, log_filename)
-
-    # Read and log the subprocess outputs
-    with open(log_path, "w") as log_file:
-        while proc.poll() is None:
-            time.sleep(1)  # Adjust the sleep duration as needed
-
-            # Read the subprocess outputs
-            stdout = proc.stdout.readline()
-            stderr = proc.stderr.readline()
-
-            # Write the outputs to the log file
-            log_file.write(stdout.decode())
-            log_file.write(stderr.decode())
-
-    # Wait for the subprocess to complete and read the final outputs
-    stdout, stderr = proc.communicate()
-    stdout = stdout.decode()
-    stderr = stderr.decode()
-
-    # Write the final outputs to the log file
-    with open(log_path, "a") as log_file:
-        log_file.write(stdout)
-        log_file.write(stderr)
-
-    # Clean up the uploaded file and log file
-    os.remove(filepath)
-    os.remove(log_path)
-
-
-
 @app.route('/static/css/<filename:path>')
 def send_static_css(filename):
+    print(f"Requested CSS file: {filename}")  # Debug print
     return static_file(filename, root='./views/css/')
+
 
 @app.route('/static/js/<filename:path>')
 def send_static_js(filename):
     return static_file(filename, root='./views/js/')
-
-
 
 @app.hook('after_request')
 def enable_protection():
@@ -312,6 +283,5 @@ def enable_protection():
     response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
     response.headers['Server'] = 'Leaky'
     response.headers['X-Powered-By'] = 'Leaky'
-
 
 run(app=app, host="127.0.0.1", port=9999)
