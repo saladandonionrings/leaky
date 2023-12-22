@@ -10,7 +10,7 @@ body {
   background-image: -webkit-linear-gradient(top, #333333 0%,#444444 100%);
   background-image: -o-linear-gradient(top, #333333 0%,#444444 100%);
   background-image: linear-gradient(to bottom, #333333 0%,#444444 100%);
-  color:#fff;
+  color: #fff;
 }
 
 .search {
