@@ -265,6 +265,19 @@ def upload_file():
         uploader.start()
 
         return {}
+@app.route('/links-directory', method='GET')
+@view('views/links.tpl')
+def link_directory():
+    if not is_authenticated():
+        redirect('/')
+    links = [
+        {"title": "HIBP", "url": "https://haveibeenpwned.com/"},
+        {"title": "Intelligence X", "url": "https://intelx.io/"},
+        {"title": "search.0t.rocks", "url": "https://search.0t.rocks/"},
+        # Add more links as needed
+    ]
+
+    return dict(links=links)
 
 @app.route('/static/css/<filename:path>')
 def send_static_css(filename):
@@ -276,10 +289,8 @@ def send_static_css(filename):
 def send_static_js(filename):
     return static_file(filename, root='./views/js/')
 
-@app.hook('after_request')
+@app.hook('before_request')
 def enable_protection():
-    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
-    response.headers['Content-Security-Policy'] = "default-src 'self' 'unsafe-inline'"
     response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
     response.headers['Server'] = 'Leaky'
     response.headers['X-Powered-By'] = 'Leaky'
