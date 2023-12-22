@@ -1,49 +1,42 @@
 % include("header-log")
 <style>
-  body {
-    background-color: #FFFFFF;
-    font-family: Arial, sans-serif;
-  }
+body {
+    padding-top: 15px;
+    background-color: #111;
+    color: #fff;  
+}
 
-  form {
+/* Custom styles for the login form */
+form {
     width: 300px;
     margin: 0 auto;
     padding: 20px;
-    background-color: #FFF;
+    background-color: #333333; 
     border-radius: 10px;
-    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-  }
+    color: #fff; 
+}
 
-  input[type="password"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    border: 1px solid #CCC;
-  }
+input[type="submit"] {
+    background-color: #7F0000; 
+    color: #fff; 
+}
 
-  input[type="submit"] {
-    width: 100%;
-    padding: 10px;
-    background-color: #1971AC;
-    color: #FFF;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
+input[type="submit"]:hover {
+    background-color: #BFBFBF; 
+}
 
-  input[type="submit"]:hover {
-    background-color: #488DBF;
-  }
+.error {
+    color: red; 
+}
 </style>
 
-<form action="/login" method="post">
-  <input type="password" name="password" placeholder="Password" required>
-  <input type="submit" value="Log in">
+<form method="post" action="/login">
+    <label for="password">Password</label>
+    <input type="password" name="password" required>
+    <input type="submit" value="Login">
 </form>
+
 
 % if failed:
     <p class="error">Incorrect credentials</p>
 % end
-
-
