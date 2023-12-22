@@ -14,7 +14,6 @@
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
   }
 
-  input[type="text"],
   input[type="password"] {
     width: 100%;
     padding: 10px;
@@ -39,7 +38,6 @@
 </style>
 
 <form action="/login" method="post">
-  <input type="text" name="username" placeholder="Username" required>
   <input type="password" name="password" placeholder="Password" required>
   <input type="submit" value="Log in">
 </form>
