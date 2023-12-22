@@ -4,7 +4,7 @@ if [ "$EUID" -ne 0 ]
   exit
 fi
 apt install python3-mysqldb python3-pip
-pip3 install python-magic bottle passlib beaker pymongo math secrets
+pip3 install python-magic bottle passlib beaker pymongo
 
 db="DBleaks"
 mongo --eval "db.credentials.createIndex({\"d\":\"hashed\"})" "$db" > /dev/null 2>&1
