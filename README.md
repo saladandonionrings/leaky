@@ -53,14 +53,18 @@ Leaky provides the following capabilities:
 * **Search** : Find domain names or individuals.
 * **List of Leaks** : Access the directory of leaks (includes name, number of credentials, date, remove).
 * **Upload** : Integrate your own leak file into the mongodb instance and watch it reflect on the web service.
+* **Links** : Useful links for data leaks.
 
 ### :camera: Screenshots
 
 **Search :** 
-![image](https://github.com/saladandonionrings/leaky/assets/61053314/bedbaca4-43f3-41b0-bee8-4360197f7413)
+![search](https://github.com/saladandonionrings/leaky/assets/61053314/f0ccc898-8dcd-4974-9a49-7792cf62a78b)
 
 **List of Leaks :**
-![image](https://github.com/saladandonionrings/leaky/assets/61053314/93c7321a-1d48-4ba0-b34b-97970c3a7e12)
+![list](https://github.com/saladandonionrings/leaky/assets/61053314/d18cba00-4644-440a-88f0-b716447cc346)
 
 **Upload :**
-![image](https://github.com/saladandonionrings/leaky/assets/61053314/9e050f53-e32a-46d9-aa97-613d75164572)
+![upload](https://github.com/saladandonionrings/leaky/assets/61053314/8fdf7da0-328b-42bd-b7c8-350f521d7e01)
+
+**Links :**
+![links](https://github.com/saladandonionrings/leaky/assets/61053314/c4a4750f-b6b8-4360-8555-25fa2b2330c6)
