@@ -11,4 +11,5 @@ mongo --eval "db.credentials.createIndex({\"d\":\"hashed\"})" "$db" > /dev/null 
 mongo --eval "db.credentials.createIndex({\"l\":\"hashed\"})" "$db" > /dev/null 2>&1
 mongo --eval "db.createCollection(\"leaks\")" "$db" > /dev/null 2>&1
 
+mkdir uploads
 python3 init.py
