@@ -1,17 +1,14 @@
 from pymongo import MongoClient
 from bottle import *
 from passlib.hash import pbkdf2_sha256
-import math
 import re
 import io
-import datetime
 import subprocess
 import os
-import time
 import secrets
 from math import ceil 
 
-secret_key = secrets.token_hex(16) 
+secret_key = secrets.token_hex(18) 
 
 mongo_database = "DBleaks"
 
@@ -26,27 +23,20 @@ def login():
 @view('views/login.tpl')
 def do_login():
     password = request.forms.get('password')
-    
     if not password:
         return template('login', failed=True)
-
     client = MongoClient()
     db = client[mongo_database]
     access = db['access'].find_one({'type': 'admin_password'})
-    
     stored_password = access.get('password') if access else None
-
     if not stored_password:
         return template('login', failed=True)
-
     if pbkdf2_sha256.verify(password, stored_password):
         print("Password verified, setting cookie and redirecting")
         response.set_cookie("authenticated", "true", secret=secret_key) 
         return redirect('/index')
     else:
         return template('login', failed=True)
-
-
 
 def is_authenticated():
     auth_cookie = request.get_cookie("authenticated", secret=secret_key)
@@ -59,7 +49,6 @@ def logout():
     response.delete_cookie('authenticated', secret=secret_key)
     redirect('/')
 
-
 @app.route('/index', method='GET')
 @view('views/index.tpl')
 def index():
@@ -69,48 +58,30 @@ def index():
         query = request.query.search
         domain_query = request.query.d
         name_query = request.query.p
-        leak_name = request.query.leakname
         page_number = request.query.page or '1'
         try:
             page_number = int(page_number)
         except ValueError:
             page_number = 1
-
         page_size = 250
-
         client = MongoClient()
         db = client[mongo_database]
         credentials = db["credentials"]
-
-        # Create text index
         credentials.create_index([("d", "text"), ("p", "text"), ("P", "text")])
         credentials.create_index([("date", 1)])
-
         query_conditions = {}
-
         if query:
             query_conditions["$text"] = {"$search": query}
-
         if domain_query:
             query_conditions["d"] = {"$regex": re.escape(domain_query)}
-
         if name_query:
             query_conditions["p"] = {"$regex": re.escape(name_query)}
-
-        if leak_name:
-            if leak_name == "All Leaks":
-                query_conditions["leakname"] = {"$exists": True}
-            else:
-                query_conditions["leakname"] = leak_name
-
         creds = []
         nbRes = 0
-
-        if query or domain_query or name_query or leak_name:
+        if query or domain_query or name_query:
             skip = (page_number - 1) * page_size
             creds = [document for document in credentials.find(query_conditions).skip(skip).limit(page_size)]
             nbRes = credentials.count_documents(query_conditions)
-
         count = credentials.count_documents({})
         count = '{:,}'.format(count).replace(',', ' ')
         total_pages = ceil(nbRes / page_size)
@@ -125,7 +96,6 @@ def index():
                 "search": query,
                 "d": domain_query,
                 "p": name_query,
-                "leakname": leak_name,
             },
             nbRes=nbRes,
             page=page_number,
@@ -135,33 +105,82 @@ def index():
             distinct_dates=distinct_dates,
         )
 
+@app.route('/phone', method=['GET'])
+@view('views/phone.tpl')
+def phone_search():
+    if not is_authenticated():
+        return redirect('/')
+    query = request.query.search
+    client = MongoClient()
+    db = client[mongo_database]
+    phone_numbers = db["phone_numbers"]
+    count = phone_numbers.count_documents({})
+    count = '{:,}'.format(count).replace(',', ' ')    
+    search_results = []
+    if query:
+        regex_query = {"$regex": re.escape(query), "$options": "i"} 
+        search_results = list(phone_numbers.find({"phone": regex_query}))
+    return {"results": search_results, "count": count}
+
+@app.route('/miscsearch', method=['GET'])
+@view('views/miscsearch.tpl')
+def misc_search():
+    if not is_authenticated():
+        return redirect('/')
+    query = request.query.search
+    client = MongoClient()
+    db = client[mongo_database]
+    misc_data = db["miscfiles"]
+    count = misc_data.count_documents({})
+    count = '{:,}'.format(count).replace(',', ' ')
+    search_results = []
+    if query:
+        regex_query = {"$regex": re.escape(query), "$options": "i"} 
+        search_results = list(misc_data.find({"donnee": regex_query}))
+    return {"results": search_results, "count": count}
+
 @app.route('/leaks', method='GET')
 @view('views/leaks.tpl')
 def getLeaks():
     if not is_authenticated():
-        redirect('/')
+        redirect('/login')
     else:
         client = MongoClient()
         db = client[mongo_database]
-        credentials = db["credentials"]
-        leaks = db["leaks"]
-        count = credentials.count_documents({})
-        count = '{:,}'.format(count).replace(',', ' ')
-        nbLeaks = leaks.count_documents({})
-        leaksa = []
-        if nbLeaks > 0:
-            for leak in leaks.find():
-                leak_id = leak["id"]
-                imported_count = credentials.count_documents({"l": leak_id})
-                leak_info = {
+        creds_leaks_info = []
+        phone_leaks_info = []
+        miscfiles_leaks_info = []
+        all_leaks = list(db["leaks"].find({}))
+        for leak in all_leaks:
+            leak_name = leak["name"]
+            leak_date = leak["date"]
+            leak_id = leak["id"]
+            if db["credentials"].count_documents({"leakname": leak_name}):
+                imported_creds_count = db["credentials"].count_documents({"leakname": leak_name})
+                creds_leaks_info.append({
                     "id": leak_id,
-                    "imported": '{:,}'.format(int(imported_count)).replace(',', ' '),
-                    "name": leak["name"],
-                    "date": leak.get("date", "")  # Set date to empty string if missing
-                }
-                leaksa.append(leak_info)
-
-        return dict(count=count, nbLeaks=nbLeaks, leaks=leaksa)
+                    "name": leak_name,
+                    "imported": imported_creds_count,
+                    "date": leak_date
+                })
+            elif db["phone_numbers"].count_documents({"leak_name": leak_name}):
+                imported_phone_count = db["phone_numbers"].count_documents({"leak_name": leak_name})
+                phone_leaks_info.append({
+                    "id": leak_id,
+                    "name": leak_name,
+                    "imported": imported_phone_count,
+                    "date": leak_date
+                })
+            elif db["miscfiles"].count_documents({"leak_name": leak_name}):
+                imported_phone_count = db["miscfiles"].count_documents({"leak_name": leak_name})
+                miscfiles_leaks_info.append({
+                    "id": leak_id,
+                    "name": leak_name,
+                    "imported": imported_phone_count,
+                    "date": leak_date
+                })
+        nbLeaks = len(all_leaks)
+        return dict(nbLeaks=nbLeaks, creds_leaks_info=creds_leaks_info, phone_leaks_info=phone_leaks_info, miscfiles_leaks_info=miscfiles_leaks_info)
 
 @app.route('/export', method='GET')
 def export():
@@ -170,29 +189,22 @@ def export():
     else:
         domain_query = request.query.d
         name_query = request.query.p
-
         if domain_query or name_query:
             client = MongoClient()
             db = client[mongo_database]
             credentials = db["credentials"]
             query_conditions = {}
-
             if domain_query:
                 query_conditions["d"] = {"$regex": re.escape(domain_query)}
-
             if name_query:
                 query_conditions["p"] = {"$regex": re.escape(name_query)}
-
             r = credentials.find(query_conditions)
             res = "\n".join([str(x["p"]) + "@" + str(x["d"]) + ":" + str(x["P"]) for x in r])
-
             output = io.BytesIO()
             output.write(res.encode('utf-8'))
             output.seek(0)
-
             response.content_type = 'application/force-download; UTF-8'
             response.set_header("Content-Disposition", "attachment;filename=creds-" + (domain_query or name_query) + ".txt")
-
             return output
         else:
             redirect("/")
@@ -206,9 +218,13 @@ def removeLeak():
             client = MongoClient()
             db = client[mongo_database]
             credentials = db["credentials"]
+            phone_numbers = db["phone_numbers"]
+            miscfiles = db["miscfiles"]
             leaks = db["leaks"]
-            print("\tRemoving credentials for leak " + str(request.query.id) + " ...")
+            print("\tRemoving leak " + str(request.query.id) + " ...")
             credentials.delete_many({"l": int(request.query.id)})
+            phone_numbers.delete_many({"l": int(request.query.id)})
+            miscfiles.delete_many({"l": int(request.query.id)})
             leaks.delete_one({"id": int(request.query.id)})
             print("\tdone.")
         redirect("/leaks")
@@ -221,50 +237,49 @@ def upload_form():
     else:
         return {}
 
-def run_leak_importer(filepath, leak_name, leak_date):
-    cmd = ["python3", "import.py", filepath, leak_name, leak_date]
+def run_leak_importer(cmd):
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
     log_filename = "leak_import.log"
     upload_folder = "uploads"
     log_path = os.path.join(upload_folder, log_filename)
-
     with open(log_path, "w") as log_file:
         while proc.poll() is None:
             stdout = proc.stdout.readline()
             stderr = proc.stderr.readline()
-
             log_file.write(stdout.decode())
             log_file.write(stderr.decode())
-
     stdout, stderr = proc.communicate()
     stdout = stdout.decode()
     stderr = stderr.decode()
-
     with open(log_path, "a") as log_file:
         log_file.write(stdout)
         log_file.write(stderr)
-
-    os.remove(filepath)
-
+    os.remove(log_path)
 
 @app.route('/upload', method='POST')
 @view('views/upload.tpl')
 def upload_file():
     if not is_authenticated():
-        redirect('/')
+        return redirect('/')
+    leak_name = request.forms.get('leakName')
+    leak_date = request.forms.get('leakDate')
+    data_type = request.forms.get('dataType')
+    upload = request.files.get('file')
+    upload_folder = "uploads"
+    filepath = os.path.join(upload_folder, upload.filename)
+    upload.save(filepath, overwrite=True)
+    if data_type == "credentials":
+        cmd = ["python3", "import.py", "creds", filepath, leak_name, leak_date]
+    elif data_type == "phone_numbers":
+        cmd = ["python3", "import.py", "phone", filepath, leak_name, leak_date]
+    elif data_type == "misc_file":
+        cmd = ["python3", "import.py", "misc", filepath, leak_name, leak_date]
     else:
-        leak_name = request.forms.get('leakName')
-        leak_date = request.forms.get('leakDate')
-        upload = request.files.get('file')
-        upload_folder = "uploads"
-        filepath = os.path.join(upload_folder, upload.filename)
-        upload.save(filepath, overwrite=True)
+        return "Unsupported data type selected.", 400
+    uploader = threading.Thread(target=run_leak_importer, args=(cmd,))
+    uploader.start()
+    return {}
 
-        uploader = threading.Thread(target=run_leak_importer, args=(filepath, leak_name, leak_date))
-        uploader.start()
-
-        return {}
 @app.route('/links-directory', method='GET')
 @view('views/links.tpl')
 def link_directory():
@@ -274,16 +289,20 @@ def link_directory():
         {"title": "HIBP", "url": "https://haveibeenpwned.com/"},
         {"title": "Intelligence X", "url": "https://intelx.io/"},
         {"title": "search.0t.rocks", "url": "https://search.0t.rocks/"},
-        # Add more links as needed
     ]
-
     return dict(links=links)
+
+@app.route('/methodo', method='GET')
+@view('methodo')
+def methodo():
+    if not is_authenticated():
+        redirect('/')
+    return {}
 
 @app.route('/static/css/<filename:path>')
 def send_static_css(filename):
     print(f"Requested CSS file: {filename}")  # Debug print
     return static_file(filename, root='./views/css/')
-
 
 @app.route('/static/js/<filename:path>')
 def send_static_js(filename):
@@ -295,4 +314,4 @@ def enable_protection():
     response.headers['Server'] = 'Leaky'
     response.headers['X-Powered-By'] = 'Leaky'
 
-run(app=app, host="127.0.0.1", port=9999)
+run(app=app, host="192.168.20.208", port=9999)
