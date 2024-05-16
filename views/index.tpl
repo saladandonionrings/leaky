@@ -1,16 +1,24 @@
 % include("header")
-
-<!-- Jumbotron -->
 <div class="jumbotron">
-  <h2>Lookup</h2>
-  <p class="lead">Search within <b style="color: red;">{{count}} credentials</b> in the database.</p>
-  <form id="searchForm" method="GET" action="/index">
-    <p><input id="dInput" type="text" class="search" style="width:100%;height:60px;font-size:25px;" name="d" placeholder="domain" /></p>
-    <p><input id="pInput" type="text" class="search" style="width:100%;height:60px;font-size:25px;" name="p" placeholder="name"/></p>
+  <h2>Credentials Lookup</h2>
+  <p class="lead">Search within <b style="color: red;">{{count}}</b> credentials</p>
+ <form id="searchForm" method="GET" action="/index">
+  <p style="text-align: center;">
+    <span style="display: inline-block; width: 30%;">
+      <label for="dInput">Domain:</label>
+      <input id="dInput" type="text" class="search" style="width: 100%; height: 60px; font-size: 25px;" name="d" placeholder="gmail.com" />
+    </span>
+    <span style="display: inline-block; width: 30%;">
+      <label for="pInput">Name:</label>
+      <input id="pInput" type="text" class="search" style="width: 100%; height: 60px; font-size: 25px;" name="p" placeholder="john.doe" />
+    </span>
+  </p>
 
-    <p><input type="submit" value="Lookup" role="button" class="btn btn-lg btn-success"/></p>
-  </form>
-
+  <p style="text-align: center;">
+    <input type="submit" value="Lookup" role="button" class="btn btn-lg btn-success" />
+  </p>
+</form>
+% if nbRes:
   <b class="nb">
     Results: <span style="color: red;">{{ nbRes }}</span>
   </b><br>
@@ -49,7 +57,7 @@
 
   </script>
 
-  <br><a href="/export?d={{ query['d'] }}&p={{ query['p'] }}&leakname={{ query['leakname'] }}" class="export-btn">Export</a>
+  <br><a href="/export?d={{ query['d'] }}&p={{ query['p'] }}" class="export-btn">Export</a>
 </div>
 <div style="text-align: right;">
   <p class="page">Pages : {{page}} / {{total}} </p>
@@ -74,4 +82,8 @@
   </tr>
   % end
 </table>
+% else:
+    <p>No results found.</p>
 % end
+% end
+
