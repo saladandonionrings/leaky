@@ -4,7 +4,7 @@
 
 Leaky is a potent arsenal of tools designed for parsing and visualizing colossal text files laden with credentials. Built with the goal to aid penetration testers and redteamers in OSINT, credentials gathering, and credential stuffing attacks, this suite delivers an efficient way to manage a sea of data.
 
-## 🆕 New Functionalities to be added - SOON
+## 🆕 New Functionalities ADDED !
 - Phone number search
 - Search through JSON, CSV and SQL files
 
