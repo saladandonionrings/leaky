@@ -6,7 +6,6 @@ body {
     color: #fff;  
 }
 
-/* Custom styles for the login form */
 form {
     width: 300px;
     margin: 0 auto;
