@@ -61,14 +61,21 @@ Leaky provides the following capabilities:
 
 ### :camera: Screenshots
 
-**Search :** 
-![search](https://github.com/saladandonionrings/leaky/assets/61053314/f0ccc898-8dcd-4974-9a49-7792cf62a78b)
+**Search Credentials :** 
+![image](https://github.com/saladandonionrings/leaky/assets/61053314/a0885daa-2058-4bc6-a418-4780a9962b39)
+
+**Search Phones :**
+![image](https://github.com/saladandonionrings/leaky/assets/61053314/8816a200-06ab-4c1f-a244-15a3db6badce)
+
+**Search SQL/JSON/CSV :**
+![image](https://github.com/saladandonionrings/leaky/assets/61053314/3379147c-c416-45ab-abee-fbcbe28f6193)
 
 **List of Leaks :**
-![list](https://github.com/saladandonionrings/leaky/assets/61053314/d18cba00-4644-440a-88f0-b716447cc346)
+![image](https://github.com/saladandonionrings/leaky/assets/61053314/e51f089a-b141-4e65-ad8a-35cf07ca8fe5)
 
 **Upload :**
-![upload](https://github.com/saladandonionrings/leaky/assets/61053314/8fdf7da0-328b-42bd-b7c8-350f521d7e01)
+![image](https://github.com/saladandonionrings/leaky/assets/61053314/36c0078d-e0bd-443f-87fa-f7a16d11423e)
 
 **Links :**
-![links](https://github.com/saladandonionrings/leaky/assets/61053314/c4a4750f-b6b8-4360-8555-25fa2b2330c6)
+![image](https://github.com/saladandonionrings/leaky/assets/61053314/9f30ee77-2aa7-4c16-88d5-49bd3c56fbb9)
+
