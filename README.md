@@ -39,7 +39,7 @@ sudo ./install.sh
 ```
 
 ### :rocket: Usage
-Leaky requires your leak file content in the **email:password** format. Follow these steps:
+When Leaky requires your leak file content in the **email:password** format. Follow these steps:
 
 ```bash
 # escape weird characters from your txt file
