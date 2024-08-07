@@ -288,7 +288,6 @@ def link_directory():
     links = [
         {"title": "HIBP", "url": "https://haveibeenpwned.com/"},
         {"title": "Intelligence X", "url": "https://intelx.io/"},
-        {"title": "search.0t.rocks", "url": "https://search.0t.rocks/"},
     ]
     return dict(links=links)
 
