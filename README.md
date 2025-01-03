@@ -4,10 +4,6 @@
 
 Leaky is a potent arsenal of tools designed for parsing and visualizing colossal text files laden with credentials. Built with the goal to aid penetration testers and redteamers in OSINT, credentials gathering, and credential stuffing attacks, this suite delivers an efficient way to manage a sea of data.
 
-## 🆕 New Functionalities ADDED !
-- Phone number search
-- Search through JSON, CSV and SQL files
-
 ## :star2: Credits
 This project is built upon the foundational work of ACCEIS' LeakScraper. Visit their GitHub repository for more information : https://github.com/Acceis/leakScraper
 
@@ -54,7 +50,10 @@ python3 scraper.py
 ### :mag_right: Functionalities
 Leaky provides the following capabilities:
 
-* **Search** : Find domain names or individuals.
+* **Search** :
+   * Domain names or individuals
+   * Phone numbers
+   * Through JSON, CSV and SQL files
 * **List of Leaks** : Access the directory of leaks (includes name, number of credentials, date, remove).
 * **Upload** : Integrate your own leak file into the mongodb instance and watch it reflect on the web service.
 * **Links** : Useful links for data leaks.
