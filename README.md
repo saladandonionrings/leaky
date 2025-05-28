@@ -47,7 +47,7 @@ sudo ./install.sh
 ### Importing data
 
 ```bash
-# change creds for users in db-users.py
+# change creds for users in init.py
 python3 init.py 
 
 # import the file into mongodb
