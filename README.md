@@ -1,11 +1,15 @@
+<p align="center">
+  <img src="https://github.com/saladandonionrings/leaky/assets/61053314/cc059d48-f246-410e-8d1d-97a4b39d7865" alt="LEAKY">
+</p>
+
 # leaky :key:
 [![Python 3.5|3.6](https://img.shields.io/badge/python-3.x-green.svg)](https://www.python.org/) 
 [![License](https://img.shields.io/badge/license-GPLv3-red.svg)](https://raw.githubusercontent.com/almandin/fuxploider/master/LICENSE.md)
 
-Leaky is a potent arsenal of tools designed for parsing and visualizing colossal text files laden with credentials. Built with the goal to aid penetration testers and redteamers in OSINT, credentials gathering, and credential stuffing attacks, this suite delivers an efficient way to manage a sea of data.
+Leaky is a potent arsenal of tools designed for parsing and visualizing colossal text files laden with credentials and stealer logs (in the ULP format). Built to aid penetration testers and redteamers in OSINT, credential gathering, and credential stuffing attacks, this suite delivers an efficient way to manage and investigate leaked data at scale.
 
 ## :star2: Credits
-This project is built upon the foundational work of ACCEIS' LeakScraper. Visit their GitHub repository for more information : https://github.com/Acceis/leakScraper
+This project is built upon the foundational work of [ACCEIS' LeakScraper](https://github.com/Acceis/leakScraper).
 
 ## :gear: Installation
 
@@ -35,46 +39,50 @@ sudo ./install.sh
 ```
 
 ### :rocket: Usage
-When Leaky requires your leak file content in the **email:password** format. Follow these steps:
+### File types supported
+- TXT 
+  - Stealer Logs (URL:Login:Password)
+  - Combos list (Login:Password)
+  - Phone numbers
+- SQL
+- CSV
+- JSON
+
+### Importing data
 
 ```bash
-# escape weird characters from your txt file
-python3 clean-file.py -i <input_file> -o <output_file>
+# change creds for users in db-users.py
+python3 init.py 
 
-# import the file into mongodb (not mandatory you can do it on the web)
-python3 import.py <file> <leak_name> <leak_date>
+# import the file into mongodb
+python3 import.py -t {creds,phone,misc} -f <file> -n <leak_name> -d <leak_date>
 
-# start web instance on port 9999 ; default password -> leaky123
+# start web instance on port 9999 ; default pass -> leaky123
 python3 scraper.py
 ```
 ### :mag_right: Functionalities
 Leaky provides the following capabilities:
 
-* **Search** :
-   * Domain names or individuals
-   * Phone numbers
-   * Through JSON, CSV and SQL files
+* **Search** : Search for leaked data.
 * **List of Leaks** : Access the directory of leaks (includes name, number of credentials, date, remove).
 * **Upload** : Integrate your own leak file into the mongodb instance and watch it reflect on the web service.
 * **Links** : Useful links for data leaks.
 
-### :camera: Screenshots
+#### Search
+##### Credentials
+![search](https://github.com/user-attachments/assets/9253220e-9d02-4523-803d-d40290c6d5e7)
 
-**Search Credentials :** 
-![image](https://github.com/saladandonionrings/leaky/assets/61053314/a0885daa-2058-4bc6-a418-4780a9962b39)
+##### Phone
+![phones](https://github.com/user-attachments/assets/3c435c44-9a5b-474b-bbac-b9d375cc04d6)
 
-**Search Phones :**
-![image](https://github.com/saladandonionrings/leaky/assets/61053314/8816a200-06ab-4c1f-a244-15a3db6badce)
+##### Misc
+![sql](https://github.com/user-attachments/assets/c94a2006-619a-4ce9-aa03-cf88040eed8f)
 
-**Search SQL/JSON/CSV :**
-![image](https://github.com/saladandonionrings/leaky/assets/61053314/3379147c-c416-45ab-abee-fbcbe28f6193)
+#### List of leaks
+![list](https://github.com/user-attachments/assets/e9feed06-e289-4dc9-b1d3-21d8faa90807)
 
-**List of Leaks :**
-![image](https://github.com/saladandonionrings/leaky/assets/61053314/e51f089a-b141-4e65-ad8a-35cf07ca8fe5)
+#### Upload
+![upload](https://github.com/user-attachments/assets/3785fb49-7fa3-404e-be12-b3efc1086802)
 
-**Upload :**
-![image](https://github.com/saladandonionrings/leaky/assets/61053314/36c0078d-e0bd-443f-87fa-f7a16d11423e)
-
-**Links :**
-![image](https://github.com/saladandonionrings/leaky/assets/61053314/9f30ee77-2aa7-4c16-88d5-49bd3c56fbb9)
-
+#### Links
+![links](https://github.com/user-attachments/assets/2fa0a902-4bf8-4db0-be22-4bdc35ec1c23)
