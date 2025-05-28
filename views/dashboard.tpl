@@ -1,5 +1,160 @@
 % include("header")
+<style>
+    /* Base styles */
+    @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap");
+    * {
+        font-family: "JetBrains Mono", monospace;
+    }
 
+    body {
+        background-color: #000000;
+        color: #FFFFFF;
+    }
+    .container {
+        max-width: 1400px;
+        padding: 20px;
+    }
+    /* Button styles */
+    .btn-glow:hover {
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    }
+    .pages {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 20px 0;
+        font-size: 16px;
+    }
+
+    .prev-page, .next-page {
+        background-color: #444444;
+        border: 1px solid #333333;
+        border-radius: 8px;
+        padding: 8px 16px;
+        color: white;
+        text-decoration: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin: 0 10px;
+    }
+
+    .prev-page:hover, .next-page:hover {
+        background-color: #555555;
+    }
+
+    .prev-page:disabled, .next-page:disabled {
+        cursor: not-allowed;
+        background-color: #333333;
+        color: #777777;
+    }
+
+
+    .btn {
+        background-color: #444444;
+        border: 1px solid #333333;
+        border-radius: 8px;
+        padding: 12px 20px;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .btn:hover {
+
+    }
+
+    .export-btn {
+        text-decoration: none;
+        padding: 10px 16px;
+        font-size: 15px;
+        background-color: #FF5555;
+        border: none;
+        color: #FFFFFF;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        margin-left: auto;
+    }
+
+    .export-btn:hover {
+        background-color: #FF8888;
+    }
+
+    /* Table styles */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        color: #FFFFFF;
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: left;
+        color: #FFFFFF;
+        border-bottom: 1px solid #333333;
+    }
+
+    th {
+        background-color: #000000;
+        font-weight: 600;
+        text-transform: uppercase;
+        border-bottom: 2px solid #444444;
+    }
+
+    tr:nth-child(even) {
+        background-color: #222222;
+    }
+
+    tr:hover {
+        background-color: #333333;
+    }
+
+    .table-cell-content {
+        white-space: normal;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        max-width: 300px;
+    }
+
+    /* Pagination styles */
+    .pagination-link {
+        background-color: #444444;
+        border: 1px solid #333333;
+        border-radius: 8px;
+        padding: 8px 16px;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .pagination-link:hover {
+        background-color: #555555;
+    }
+
+    .pagination-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    /* Input fields */
+    .search {
+        background-color: #222222;
+        border: 1px solid #333333;
+        border-radius: 8px;
+        color: white;
+        padding: 12px;
+        font-size: 16px;
+        width: 100%;
+    }
+
+    .search:focus {
+        outline: none;
+        border-color: #555555;
+    }
+
+</style>
 <!-- Jumbotron -->
 <div class="jumbotron">
   <h2>Lookup</h2>
