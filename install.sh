@@ -1,15 +1,29 @@
 #!/bin/bash
-if [ "$EUID" -ne 0 ]
-  then echo "Please run as root"
-  exit
-fi
-apt install python3-mysqldb python3-pip
-pip3 install python-magic bottle passlib beaker pymongo
+set -e  # Arrête le script en cas d'erreur
 
-db="DBleaks"
-mongo --eval "db.credentials.createIndex({\"d\":\"hashed\"})" "$db" > /dev/null 2>&1
-mongo --eval "db.credentials.createIndex({\"l\":\"hashed\"})" "$db" > /dev/null 2>&1
-mongo --eval "db.createCollection(\"leaks\")" "$db" > /dev/null 2>&1
+# URI MongoDB basé sur le réseau Docker
+MONGO_URI=${MONGO_URI:-"mongodb://127.0.0.1:27017/DBleaks"}
 
-mkdir uploads
-python3 init.py
+echo "Installing Python dependencies..."
+pip3 install --no-cache-dir -r requirements.txt
+
+echo "Configuring MongoDB indexes and collections..."
+mongosh "$MONGO_URI" --eval "db.credentials.createIndex({\"l\":\"hashed\"})"
+mongosh "$MONGO_URI" --eval "db.credentials.createIndex({\"url\":\"hashed\"})"
+mongosh "$MONGO_URI" --eval "db.credentials.createIndex({\"leakname\":1, \"date\":1})"
+
+# Création des index pour les collections supplémentaires
+mongosh "$MONGO_URI" --eval "db.phone_numbers.createIndex({\"l\":\"hashed\"})"
+mongosh "$MONGO_URI" --eval "db.phone_numbers.createIndex({\"phone\":1})"
+mongosh "$MONGO_URI" --eval "db.miscfiles.createIndex({\"l\":\"hashed\"})"
+mongosh "$MONGO_URI" --eval "db.miscfiles.createIndex({\"donnee\":1})"
+
+# Création des collections si elles n'existent pas déjà
+mongosh "$MONGO_URI" --eval "db.createCollection(\"leaks\")"
+mongosh "$MONGO_URI" --eval "db.createCollection(\"phone_numbers\")"
+mongosh "$MONGO_URI" --eval "db.createCollection(\"miscfiles\")"
+
+echo "Creating initial users..."
+python3 db-users.py
+
+echo "Setup completed successfully!"
