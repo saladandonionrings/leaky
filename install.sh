@@ -24,6 +24,6 @@ mongosh "$MONGO_URI" --eval "db.createCollection(\"phone_numbers\")"
 mongosh "$MONGO_URI" --eval "db.createCollection(\"miscfiles\")"
 
 echo "Creating initial users..."
-python3 db-users.py
+python3 init.py
 
 echo "Setup completed successfully!"
