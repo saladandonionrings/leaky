@@ -1,77 +1,146 @@
 from pymongo import MongoClient
 import sys
 import os
+import re
+import argparse
+import subprocess
 
-# database parameters
 mongo_database = "DBleaks"
 
-def import_credentials(file_path, leak_name, leak_date):
+# Valid URL schemes, domain pattern, and IP address with optional port
+valid_url_schemes = ["http://", "https://", "ftp://", "ssh://", "android://", "imap://", "smb://", "sftp://", "pop3://", "smtp://"]
+domain_pattern = re.compile(r'^(?!https?$)([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})(?::\d{1,5})?(?:/.*)?$')
+ip_pattern = re.compile(r'^(?:\d{1,3}\.){3}\d{1,3}(?::\d{1,5})?(?:/.*)?$')
+android_pattern = re.compile(r'^(android://[A-Za-z0-9_\-=+/]+@[a-zA-Z0-9.-]+/):([^:]+):(.+)$')
+
+def is_valid_url(url):
+    if any(url.startswith(scheme) for scheme in valid_url_schemes):
+        return True
+    if domain_pattern.match(url) or ip_pattern.match(url) or android_pattern.match(url):
+        return True
+    return False
+
+def parse_line(line):
+    # First, check for formats where URL is present
+    match = re.match(r'^(https?://[^\s]+):([^:]+):(.+)$', line)
+    if match:
+        return match.group(1), match.group(2), match.group(3)
+    match = re.match(r'^(ftp://[^\s]+):([^:]+):(.+)$', line)
+    if match:
+        return match.group(1), match.group(2), match.group(3)
+    match = re.match(r'^(ssh://[^\s]+):([^:]+):(.+)$', line)
+    if match:
+        return match.group(1), match.group(2), match.group(3)
+    match = re.match(android_pattern, line)
+    if match:
+        return match.group(1), match.group(2), match.group(3)
+    
+    # Check for domain-based or IP-based URL formats with optional port
+    match = re.match(r'^([^:\s]+\.[a-zA-Z]{2,}(:\d{1,5})?[^\s]*):([^:]+):(.+)$', line)
+    if match:
+        return match.group(1), match.group(3), match.group(4)
+    match = re.match(r'^((?:\d{1,3}\.){3}\d{1,3}(:\d{1,5})?[^\s]*):([^:]+):(.+)$', line)
+    if match:
+        return match.group(1), match.group(3), match.group(4)
+    
+    # Check for Login:Password only
+    match = re.match(r'^([^:]+):([^:]+)$', line)
+    if match:
+        return "", match.group(1), match.group(2)
+    
+    return None
+
+def remove_duplicates(file_path):
+    print("🧹 Removing duplicates...")
+    seen = set()
+    unique_lines = []
+    
+    with open(file_path, "r", encoding="utf-8") as file:
+        for line in file:
+            line = line.strip()
+            if line not in seen:
+                seen.add(line)
+                unique_lines.append(line)
+    
+    with open(file_path, "w", encoding="utf-8") as file:
+        file.write("\n".join(unique_lines) + "\n")
+    print("    ✅ Done")
+
+def import_credentials(file_path, leak_date, leak_name=None):
     client = MongoClient()
     db = client[mongo_database]
     credentials = db["credentials"]
     leaks = db["leaks"]
-    credentials.create_index([("leakname", 1), ("date", 1)])
-    leak = leaks.find_one({"name": leak_name})
-    if not leak:
-        new_id = leaks.count_documents({}) + 1
-        leaks.insert_one({"name": leak_name, "date": leak_date, "id": new_id})
-    else:
-        new_id = leak["id"]
+
+    remove_duplicates(file_path)
+
     imported_count = 0
     skipped_count = 0
-    with open(file_path, "r") as file:
+
+    leak_entry = leaks.find_one({"name": leak_name})
+    if not leak_entry:
+        leak_id = leaks.count_documents({}) + 1
+        leaks.insert_one({"name": leak_name, "date": leak_date, "id": leak_id})
+    else:
+        leak_id = leak_entry["id"]
+
+    with open(file_path, "r", encoding='utf-8') as file:
+        print("📥 Importing...")
         for line in file:
             line = line.strip()
-            if line:
-                if line.startswith('http://') or line.startswith('https://'):
-                    parts = line.split(':')
-                    if len(parts) >= 3:
-                        url = parts[0] + ':' + parts[1]
-                        email, password = ':'.join(parts[2:-1]), parts[-1]
-                    else:
-                        print(f"Skipped line due to wrong format: {line}")
-                        skipped_count += 1
-                        continue
-                else:
-                    parts = line.split(':')
-                    if len(parts) == 2:
-                        url, email, password = None, parts[0], parts[1]
-                    else:
-                        print(f"Skipped line due to wrong format: {line}")
-                        skipped_count += 1
-                        continue
-                email_parts = email.split("@")
-                if len(email_parts) == 2:
-                    username, domain = email_parts[0], email_parts[1]
-                    credential = {
-                        "l": new_id,
-                        "p": username,
-                        "d": domain, 
-                        "P": password,
-                        "url": url,
-                        "leakname": leak_name,
-                        "date": leak_date
-                    }
-                    credentials.insert_one(credential)
-                    imported_count += 1
-                else:
-                    print(f"Skipped line due to bad email: {line}")
-                    skipped_count += 1
-    print(f"Imported {imported_count} credentials. Skipped {skipped_count} lines.")
+            if not line:
+                continue
 
-def import_phone_numbers(file_path, leak_name, leak_date):
+            result = parse_line(line)
+            if result is None:
+                skipped_count += 1
+                print(f"    ❌ Skipping malformed line: {line}")
+                continue
+
+            url, login, password = result
+
+            # Ensure login and password exist and are properly structured
+            if not login or not password or login.strip() == "" or password.strip() == "":
+                skipped_count += 1
+                print(f"    ❌ Skipping invalid line (missing login/password): {line}")
+                continue
+
+            # Ensure the extracted URL is valid or empty
+            if url and not is_valid_url(url):
+                skipped_count += 1
+                print(f"    ❌ Skipping invalid URL format: {url}")
+                continue
+
+            credential = {
+                "l": leak_id,
+                "url": url if url else "",
+                "p": login,
+                "P": password,
+                "leakname": leak_name,
+                "date": leak_date,
+            }
+            credentials.insert_one(credential)
+            imported_count += 1
+
+
+    print(f"✅ Imported {imported_count} credentials. ({skipped_count} lines skipped)")
+
+
+def import_phone_numbers(file_path, leak_date, leak_name=None):
     client = MongoClient()
     db = client[mongo_database]
     phone_numbers = db["phone_numbers"]
     leaks = db["leaks"]
+
     leak = leaks.find_one({"name": leak_name})
     if not leak:
         new_id = leaks.count_documents({}) + 1
         leaks.insert_one({"name": leak_name, "date": leak_date, "id": new_id})
     else:
         new_id = leak["id"]
+
     imported_count = 0
-    with open(file_path, "r") as file:
+    with open(file_path, "r", encoding='utf-8') as file:
         for line in file:
             phone_number = line.strip()
             if phone_number:
@@ -79,70 +148,61 @@ def import_phone_numbers(file_path, leak_name, leak_date):
                     "l": new_id,
                     "phone": phone_number,
                     "leak_name": leak_name,
-                    "leak_date": leak_date
+                    "leak_date": leak_date,
                 }
                 phone_numbers.insert_one(phone_number_doc)
                 imported_count += 1
-    return imported_count
+    print(f"✅ Imported {imported_count} phone numbers.")
 
-def import_misc(file_path, leak_name, leak_date):
+def import_misc(file_path, leak_date, leak_name=None):
     client = MongoClient()
     db = client[mongo_database]
-    donnees = db["miscfiles"]
+    miscfiles = db["miscfiles"]
     leaks = db["leaks"]
+
     leak = leaks.find_one({"name": leak_name})
     if not leak:
         new_id = leaks.count_documents({}) + 1
         leaks.insert_one({"name": leak_name, "date": leak_date, "id": new_id})
     else:
         new_id = leak["id"]
-    imported_count = 0
-    with open(file_path, "r") as file:
-        for line in file:
-            donnee = line.strip()
-            if donnee:
-                donnee_doc = {
-                    "l": new_id,
-                    "donnee": donnee,
-                    "leak_name": leak_name,
-                    "leak_date": leak_date
-                }
-                donnees.insert_one(donnee_doc)
-                imported_count += 1
-    return imported_count
 
+    imported_count = 0
+    with open(file_path, "r", encoding='utf-8') as file:
+        for line in file:
+            misc_data = line.strip()
+            if misc_data:
+                misc_doc = {
+                    "l": new_id,
+                    "donnee": misc_data,
+                    "leak_name": leak_name,
+                    "leak_date": leak_date,
+                }
+                miscfiles.insert_one(misc_doc)
+                imported_count += 1
+    print(f"✅ Imported {imported_count} misc entries.")
 
 def main():
-    if len(sys.argv) < 5:
-        print("Usage:")
-        print("Credentials: python3 import.py creds <file_path> <leak_name> <leak_date>")
-        print("Phone numbers: python3 import.py phone <file_path> <leak_name> <leak_date>")
-        print("SQL/CSV/JSON: python3 import.py misc <file_path> <leak_name> <leak_date>")
-        sys.exit(1)
+    parser = argparse.ArgumentParser(description="Import leaked data into MongoDB")
+    parser.add_argument("-f", "--file", required=True, help="Path to the file containing leaks")
+    parser.add_argument("-d", "--date", required=True, help="Date of the leak")
+    parser.add_argument("-n", "--name", help="Optional leak name")
+    parser.add_argument("-t", "--type", required=True, choices=["creds", "phone", "misc"], help="Type of data to import")
 
-    import_type = sys.argv[1]
-    file_path = sys.argv[2]
-    leak_name = sys.argv[3]
-    leak_date = sys.argv[4]
+    args = parser.parse_args()
 
-    if not os.path.isfile(file_path):
+    if not os.path.isfile(args.file):
         print("Invalid file path.")
         sys.exit(1)
 
-    client = MongoClient()
-    client[mongo_database]
-
-    if import_type == "creds":
-        imported_count = import_credentials(file_path, leak_name, leak_date)
-        print(f"Imported {imported_count} credentials.")
-    elif import_type == "phone":
-        imported_count = import_phone_numbers(file_path, leak_name, leak_date)
-        print(f"Imported {imported_count} phone numbers.")
-    elif import_type == "misc":
-        imported_count = import_misc(file_path, leak_name, leak_date)
-        print(f"Imported {imported_count} lines.")
+    if args.type == "creds":
+        import_credentials(args.file, args.date, args.name)
+    elif args.type == "phone":
+        import_phone_numbers(args.file, args.date, args.name)
+    elif args.type == "misc":
+        import_misc(args.file, args.date, args.name)
     else:
-        print("Invalid import type specified.")
+        print("❓ Invalid type specified.")
         sys.exit(1)
 
 if __name__ == "__main__":
