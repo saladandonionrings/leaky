@@ -5,8 +5,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>leaky</title>
-    <link rel="stylesheet" href="/static/css/style.css" />
     <link rel="stylesheet" href="/static/css/bootstrap.min.css"  />
+    <link rel="stylesheet" href="/static/css/style.css" />
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </head>
 <body id="home">
     <div class="container">
@@ -22,26 +25,26 @@
             <ul class="navbar-nav text-md-center nav-justified w-100">
               <li class="nav-item dropdown active">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownSearch" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Search
+                  🔎 Search
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownSearch">
-                  <a class="dropdown-item" href="/index">Credentials</a>
-                  <a class="dropdown-item" href="/phone">Phone numbers</a>
-                  <a class="dropdown-item" href="/miscsearch">SQL/JSON/CSV</a>
+                  <a class="dropdown-item" href="/index">🔑 Credentials</a>
+                  <a class="dropdown-item" href="/phone">☎️ Phone numbers</a>
+                  <a class="dropdown-item" href="/miscsearch">🛢️ SQL/JSON/CSV</a>
                 </div>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/leaks">List of Leaks</a>
+                <a class="nav-link" href="/leaks">📋 List of Leaks</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/upload">Upload</a>
+                <a class="nav-link" href="/upload">📥 Upload</a>
               </li>
               <li class="nav-item dropdown active">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownSearch" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  MISC
+                  🗃️ MISC
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownSearch">
-                  <a class="dropdown-item" href="/links-directory">Links Directory</a>
+                  <a class="dropdown-item" href="/links-directory">🔗 Links</a>
                 </div>
               </li>
               <li class="nav-item">
@@ -51,9 +54,4 @@
           </div>
         </nav>
       </div>
-
-<!-- Bootstrap JS, Popper.js, and jQuery -->
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
