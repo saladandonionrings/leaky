@@ -1,8 +1,6 @@
 body {
   padding-top: 15px;
-  background-image: -webkit-linear-gradient(top, #000000 0%,#111111 100%);
-  background-image: -o-linear-gradient(top, #000000 0%,#111111 100%);
-  background-image: linear-gradient(to bottom, #000000 0%,#111111 100%);
+
 }
 
 .jumbotron {
@@ -10,7 +8,8 @@ body {
   background-image: -webkit-linear-gradient(top, #333333 0%,#444444 100%);
   background-image: -o-linear-gradient(top, #333333 0%,#444444 100%);
   background-image: linear-gradient(to bottom, #333333 0%,#444444 100%);
-  color: #fff;
+  color:#fff;
+  width: 80%;
 }
 
 .search {
@@ -76,6 +75,7 @@ body {
 .page{
   color:#fff;
   }
+
 .navbar {
   background-image: -webkit-linear-gradient(top, #000000 0%,#333333 100%);
   background-image: -o-linear-gradient(top, #000000 0%,#333333 100%);
@@ -84,11 +84,45 @@ body {
  -webkit-text-fill-color: #ffffff;
 }
 
+.navbar .dropdown-item {
+  background-image: -webkit-linear-gradient(top, #000000 0%,#333333 100%);
+  background-image: -o-linear-gradient(top, #000000 0%,#333333 100%);
+  background-image: linear-gradient(to bottom, #000000 0%,#333333 100%);
+  border: 1px solid #e5e5e5;
+ -webkit-text-fill-color: #ffffff;
+ padding: 0.5em 4em;
+}
+
 .nav-link {
   color: #FFFFFF;
 }
 
-.nav-item:hover{
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    float: left;
+    min-width: 10rem;
+    margin: .125rem 0 0;
+    font-size: 1rem;
+    color: #212529;
+    text-align: center;
+    list-style: none;
+    background-image: -webkit-linear-gradient(top, #000000 0%,#333333 100%);
+    background-image: -o-linear-gradient(top, #000000 0%,#333333 100%);
+    background-image: linear-gradient(to bottom, #000000 0%,#333333 100%);
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, .15);
+    border-radius: .25rem;
+}
+
+.dropdown-menu:hover {
+  background-color: #333333;  
+}
+
+.nav-item:hover, .navbar .dropdown-item:hover{
   background-color: #333333;
 }
 
@@ -130,28 +164,35 @@ body {
 }
 
 table {
-  width: 100%;
-  border-collapse: collapse;
-  color: #FFFFFF;
+  width: 100%; /* Le tableau occupe toute la largeur disponible */
+  table-layout: fixed; /* Fixe la largeur des colonnes */
+  border-collapse: collapse; /* Retire les espaces entre les cellules */
+  color: #FFFFFF; /* Couleur du texte */
 }
 
-td, th {
-  padding: 8px;
-  text-align: left;
-  color: #FFFFFF;
-  background-color: #333333;
+th, td {
+  padding: 8px; /* Espacement interne des cellules */
+  text-align: left; /* Alignement du texte à gauche */
+  color: #FFFFFF; /* Couleur du texte */
+  background-color: #333333; /* Couleur de fond */
+  border: 1px solid #444444; /* Bordure des cellules */
+  word-wrap: break-word; /* Permet au texte de revenir à la ligne */
+  white-space: normal; /* Permet de gérer le retour à la ligne */
+}
+
+td.url, td.email {
+  max-width: 300px; /* Largeur maximale pour URL et Email */
+}
+
+th {
+  background-color: #000000; /* Couleur de fond des en-têtes */
+  color: #FFFFFF; /* Couleur du texte des en-têtes */
 }
 
 tr:nth-child(even) {
-  background-color: #444444;
+  background-color: #444444; /* Couleur de fond des lignes paires */
 }
 
 tr:hover td {
-  background-color: #555555;
-}
-
-
-th {
-  background-color: #000000;
-  color: #FFFFFF;
+  background-color: #555555; /* Couleur de fond des cellules survolées */
 }
