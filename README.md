@@ -4,6 +4,10 @@
 
 Leaky is a potent arsenal of tools designed for parsing and visualizing colossal text files laden with credentials and stealer logs (in the ULP format). Built to aid penetration testers and redteamers in OSINT, credential gathering, and credential stuffing attacks, this suite delivers an efficient way to manage and investigate leaked data at scale.
 
+# ⚠️ Disclaimer  
+> This project is intended for **educational and professional use only**. It is designed for **penetration testers**, **red team / blue team members**, and **cybersecurity professionals** working in legal and authorized contexts (OSINT, security assessments, leak analysis, etc.).  
+> **No illegal or unethical activity is encouraged, promoted, or supported** by the authors of this project. Use responsibly and within the bounds of applicable laws.
+
 ## :star2: Credits
 This project is built upon the foundational work of [ACCEIS' LeakScraper](https://github.com/Acceis/leakScraper).
 
