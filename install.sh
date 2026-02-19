@@ -2,19 +2,27 @@
 set -e  # Stops the script if errors
 
 # Common errors Mongodb
-echo "> Checking if mongodb has no errors"
+echo "> Checking that mongodb has no errors"
+sudo rm -f /tmp/mongodb-27017.sock
 sudo mkdir -p /var/log/mongodb
 sudo chown -R mongodb:mongodb /var/log/mongodb
+sudo chown -R mongodb:mongodb /var/lib/mongodb
 sudo chmod -R 755 /var/log/mongodb
 sudo systemctl restart mongod
+
+echo "> Waiting for MongoDB to start..."
+until mongosh --eval "db.adminCommand('ping')" --quiet >/dev/null 2>&1; do
+  sleep 1
+done
+echo "  > MongoDB is UP!"
 
 # URI MongoDB
 MONGO_URI=${MONGO_URI:-"mongodb://127.0.0.1:27017/DBleaks"}
 
-echo "Installing Python dependencies..."
+echo "> Installing Python dependencies..."
 pip3 install --no-cache-dir -r requirements.txt
 
-echo "Configuring MongoDB indexes and collections..."
+echo "> Configuring MongoDB indexes and collections..."
 mongosh "$MONGO_URI" --eval "db.credentials.createIndex({\"l\":\"hashed\"})"
 mongosh "$MONGO_URI" --eval "db.credentials.createIndex({\"url\":\"hashed\"})"
 mongosh "$MONGO_URI" --eval "db.credentials.createIndex({\"leakname\":1, \"date\":1})"
@@ -30,7 +38,7 @@ mongosh "$MONGO_URI" --eval "db.createCollection(\"leaks\")"
 mongosh "$MONGO_URI" --eval "db.createCollection(\"phone_numbers\")"
 mongosh "$MONGO_URI" --eval "db.createCollection(\"miscfiles\")"
 
-echo "Creating initial users..."
+echo "> Creating initial users..."
 python3 init.py
 
-echo "Setup completed successfully!"
+echo ">> Setup completed successfully!"
