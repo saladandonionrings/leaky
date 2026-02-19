@@ -69,20 +69,20 @@ Leaky provides the following capabilities:
 * **Links** : Useful links for data leaks.
 
 #### Search
-##### Credentials
-![search](https://github.com/user-attachments/assets/9253220e-9d02-4523-803d-d40290c6d5e7)
+##### Credentials/ULP
+![search](https://github.com/user-attachments/assets/63da8750-24da-4c3a-9a58-edea90bee637)
 
 ##### Phone
-![phones](https://github.com/user-attachments/assets/3c435c44-9a5b-474b-bbac-b9d375cc04d6)
+![phones](https://github.com/user-attachments/assets/0e2fa15a-dd32-4b36-9dd2-567dab61d1f7)
 
 ##### Misc
-![sql](https://github.com/user-attachments/assets/c94a2006-619a-4ce9-aa03-cf88040eed8f)
+![csv](https://github.com/user-attachments/assets/d6a921ee-8409-4bb1-9a41-03209500aa50)
 
-#### List of leaks
-![list](https://github.com/user-attachments/assets/e9feed06-e289-4dc9-b1d3-21d8faa90807)
+#### Inventory
+![list](https://github.com/user-attachments/assets/cf8612b3-6215-49c9-8f0d-19c56f1b2c27)
 
 #### Upload
-![upload](https://github.com/user-attachments/assets/3785fb49-7fa3-404e-be12-b3efc1086802)
+![upload](https://github.com/user-attachments/assets/ae9f33e9-f35f-4443-886c-f85a8e1d9558)
 
 #### Links
-![links](https://github.com/user-attachments/assets/2fa0a902-4bf8-4db0-be22-4bdc35ec1c23)
+![links](https://github.com/user-attachments/assets/0ffc22c2-70b6-47d3-890a-bbd694106579)
