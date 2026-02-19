@@ -2,7 +2,7 @@
 [![Python 3.5|3.6](https://img.shields.io/badge/python-3.x-green.svg)](https://www.python.org/) 
 [![License](https://img.shields.io/badge/license-GPLv3-red.svg)](https://raw.githubusercontent.com/almandin/fuxploider/master/LICENSE.md)
 
-Leaky is a potent arsenal of tools designed for parsing and visualizing colossal text files laden with credentials and stealer logs (in the ULP format). Built to aid penetration testers and redteamers in OSINT, credential gathering, and credential stuffing attacks, this suite delivers an efficient way to manage and investigate leaked data at scale.
+Leaky is an arsenal of tools designed for parsing and visualizing colossal text files laden with credentials and stealer logs (in the ULP format). Built to aid penetration testers and redteamers in OSINT, credential gathering, and credential stuffing attacks, this suite delivers an efficient way to manage and investigate leaked data at scale.
 
 ## ⚠️ Disclaimer  
 This project is intended for **educational and professional use only**. It is designed for **penetration testers**, **red team / blue team members**, and **cybersecurity professionals** working in legal and authorized contexts (OSINT, security assessments, leak analysis, etc.).  
