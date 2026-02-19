@@ -1,8 +1,7 @@
 from pymongo import MongoClient
 from passlib.hash import pbkdf2_sha256
 
-# Replace with your own password
-admin_password = "leaky123" 
+admin_password = "leaky123" # CHANGETHIS
 
 hashed_password = pbkdf2_sha256.hash(admin_password)
 

@@ -1,64 +1,125 @@
 % include('header.tpl')
 <style>
-    /* Base styles */
-    @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap");
-    * {
-        font-family: "JetBrains Mono", monospace;
-    }
+    /* Harmonisation avec le design premium 2026 */
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap");
+
+    * { font-family: 'Inter', sans-serif; }
 
     body {
-        background-color: #000000;
-        color: #FFFFFF;
+        background-color: #050505;
+        color: #e0e0e0;
     }
+
     .container {
         max-width: 1400px;
-        padding: 20px;
+        padding: 40px 20px;
     }
-    /* Button styles */
-    .btn-glow:hover {
-        box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+
+    /* Carte de recherche centrée */
+    .search-container {
+        background: #0f0f0f;
+        border: 1px solid #1e1e1e;
+        border-radius: 20px;
+        padding: 40px;
+        max-width: 800px;
+        margin: 0 auto 50px auto;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        text-align: center;
     }
+
+    .search-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: #ffffff;
+    }
+
+    .stats-text {
+        color: #888;
+        margin-bottom: 30px;
+    }
+
+    .text-red-500 {
+        color: #ff4d4d !important;
+        font-weight: 700;
+    }
+
+    /* Input de recherche stylisé */
+    .search {
+        background-color: #121212 !important;
+        border: 1px solid #2a2a2a !important;
+        border-radius: 12px !important;
+        color: white !important;
+        padding: 15px 20px !important;
+        font-family: 'JetBrains Mono', monospace !important;
+        font-size: 16px;
+        width: 100% !important;
+        transition: all 0.3s ease;
+        outline: none;
+    }
+
+    .search:focus {
+        border-color: #7F0000 !important;
+        box-shadow: 0 0 0 4px rgba(127, 0, 0, 0.15);
+        background-color: #161616 !important;
+    }
+
     .btn {
-        background-color: #5d000d;
-        border: 1px solid #333333;
-        border-radius: 8px;
-        padding: 12px 20px;
+        background: linear-gradient(135deg, #7F0000 0%, #4d0000 100%) !important;
+        border: none !important;
+        border-radius: 12px !important;
+        padding: 14px 40px !important;
+        font-weight: 600 !important;
+        text-transform: uppercase;
+        letter-spacing: 1px;
         color: white;
         cursor: pointer;
-        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        transition: all 0.3s ease !important;
+        margin-top: 20px;
     }
 
     .btn:hover {
-        background-color: #3a0516;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(127, 0, 0, 0.4);
+        filter: brightness(1.1);
     }
 
-    /* Table styles */
+    /* Tableau de résultats */
+    .results-card {
+        background: #0f0f0f;
+        border: 1px solid #1e1e1e;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
     table {
         width: 100%;
-        border-collapse: collapse;
-        color: #FFFFFF;
-    }
-
-    th, td {
-        padding: 12px;
-        text-align: left;
-        color: #FFFFFF;
-        border-bottom: 1px solid #333333;
+        border-collapse: separate;
+        border-spacing: 0;
     }
 
     th {
-        background-color: #000000;
-        font-weight: 600;
+        background-color: #161616 !important;
+        color: #666 !important;
+        font-size: 0.75rem !important;
         text-transform: uppercase;
-        border-bottom: 2px solid #444444;
+        letter-spacing: 0.1em;
+        padding: 18px 20px !important;
+        border-bottom: 1px solid #222 !important;
     }
 
-    tr:nth-child(even) {
-        background-color: #222222;
+    td {
+        padding: 16px 20px !important;
+        border-bottom: 1px solid #161616 !important;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.9rem;
+        color: #ccc;
     }
 
-    tr:hover {
-        background-color: #333333;
+    tr:hover td {
+        background-color: rgba(255, 255, 255, 0.02) !important;
+        color: #fff;
     }
 
     .data-column {
@@ -67,73 +128,60 @@
         overflow-wrap: break-word;
     }
 
-        /* Reduce input width */
-    .search {
-        background-color: #222222;
-        border: 1px solid #333333;
-        border-radius: 8px;
-        color: white;
-        padding: 12px;
-        font-size: 16px;
-        width: 50%;  /* Set width to 50% */
+    .no-results {
+        color: #888;
+        text-align: center;
+        padding: 40px;
+        font-style: italic;
     }
-
-    /* Ensure full width for smaller screens */
-    @media (max-width: 768px) {
-        .search {
-            width: 100%;
-        }
-    }
-
-    .search:focus {
-        outline: none;
-        border-color: #444444;
-    }
-
 </style>
 
-<div class="flex flex-col items-center bg-[#111111] text-white py-8 px-6 rounded-xl shadow-lg">
-  <h4 class="text-3xl font-semibold mb-4">SQL/CSV/JSON Lookup</h2>
-  <p class="text-lg mb-4">Search within <b class="text-red-500">{{count}}</b> lines of data</p>
+<div class="container">
+    <div class="search-container">
+        <h4 class="search-title">SQL / CSV / JSON Lookup</h4>
+        <p class="stats-text">Search within <b class="text-red-500">{{count}}</b> lines of structured data.</p>
 
-  <form id="searchForm" method="GET" action="/miscsearch" class="w-full max-w-lg">
-    <div class="mb-6">
-      <label for="search" class="block text-sm font-medium text-gray-300 mb-2">Search term:</label><br>
-      <input id="search" name="search" type="text" placeholder="domain/name/phone"
-             class="search block w-full px-4 py-2 text-lg text-gray-300 bg-black border border-gray-700 rounded-md shadow-sm focus:ring focus:ring-gray-800 focus:outline-none">
+        <form id="searchForm" method="GET" action="/miscsearch">
+            <div class="text-left">
+                <label for="search" class="small text-uppercase tracking-wider text-gray-500 mb-2 d-block">Search Term</label>
+                <input id="search" name="search" type="text" placeholder="domain, name, or specific identifier..." class="search" required>
+            </div>
+            <input type="submit" value="Start Search" class="btn" />
+        </form>
     </div>
-    <div class="w-full mt-4">
-      <input type="submit" value="Lookup" class="btn" />
+
+    % if query:
+    <div class="max-w-5xl mx-auto">
+        % if results:
+        <div class="results-card">
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 50%;">Raw Data</th>
+                            <th style="width: 30%;">Source Leak</th>
+                            <th style="width: 20%;">Discovery Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        % for result in results:
+                        <tr>
+                            <td class="data-column">{{result['donnee']}}</td>
+                            <td class="data-column opacity-75">{{result['leak_name']}}</td>
+                            <td class="data-column small">{{result['leak_date']}}</td>
+                        </tr>
+                        % end
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        % else:
+        <div class="no-results">
+            <p>No matches found for "{{query}}". Try a different keyword.</p>
+        </div>
+        % end
     </div>
-  </form>
+    % end
 </div>
 
-% if query:
-  <div class="mt-8 max-w-5xl mx-auto">
-    % if results:
-      <div class="overflow-x-auto rounded-lg border border-gray-800 shadow-md">
-        <table>
-          <thead>
-            <tr>
-              <th>Data</th>
-              <th>Leak Name</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            % for result in results:
-            <tr>
-              <td class="data-column">{{result['donnee']}}</td>
-              <td class="data-column">{{result['leak_name']}}</td>
-              <td class="data-column">{{result['leak_date']}}</td>
-            </tr>
-            % end
-          </tbody>
-        </table>
-      </div>
-    % else:
-      <p class="text-gray-400 text-center mt-4">No results found.</p>
-    % end
-  </div>
-% end
-
+% include('footer.tpl')

@@ -221,7 +221,7 @@ def export():
     else:
         domain_query = request.query.d
         name_query = request.query.p
-        url_query = request.query.url  # Exporter aussi en fonction de l'URL
+        url_query = request.query.url 
         if domain_query or name_query or url_query:
             client = MongoClient()
             db = client[mongo_database]
@@ -235,12 +235,12 @@ def export():
                 query_conditions["url"] = {"$regex": re.escape(url_query)}
 
             r = credentials.find(query_conditions)
-            res = "\n".join([f"{x.get('url', 'N/A')}:{x['p']}@{x['d']}:{x['P']}" for x in r])
+            res = "\n".join([f"{x.get('url', 'N/A')},{x.get('p', 'N/A')},{x.get('d', 'N/A')},{x.get('P', 'N/A')}" for x in r])
             output = io.BytesIO()
             output.write(res.encode('utf-8'))
             output.seek(0)
             response.content_type = 'application/force-download; UTF-8'
-            response.set_header("Content-Disposition", "attachment;filename=creds-" + (domain_query or name_query or url_query) + ".txt")
+            response.set_header("Content-Disposition", "attachment;filename=creds-" + (domain_query or name_query or url_query) + ".csv")
             return output
         else:
             redirect("/")
@@ -309,7 +309,9 @@ def upload_file():
         return "Missing required fields", 400
     
     upload_folder = "uploads"
-    filepath = os.path.join(upload_folder, upload.filename)
+    # safer way - renaming filename with underscores
+    safe_filename = re.sub(r'[^a-zA-Z0-9._-]', '_', os.path.basename(upload.filename))
+    filepath = os.path.join(upload_folder, safe_filename)
     upload.save(filepath, overwrite=True)
     
     if data_type == "credentials":

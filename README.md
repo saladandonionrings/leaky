@@ -11,7 +11,7 @@ This project is intended for **educational and professional use only**. It is de
 ## :star2: Credits
 This project is built upon the foundational work of [ACCEIS' LeakScraper](https://github.com/Acceis/leakScraper).
 
-## :gear: Installation
+## Installation
 
 You can install Leaky and its prerequisites using the following commands:
 
@@ -38,7 +38,7 @@ cd leaky
 sudo ./install.sh
 ```
 
-### :rocket: Usage
+### Usage
 ### File types supported
 - TXT 
   - Stealer Logs (URL:Login:Password)
@@ -60,12 +60,12 @@ python3 import.py -t {creds,phone,misc} -f <file> -n <leak_name> -d <leak_date>
 # start web instance on port 9999 ; default pass -> leaky123
 python3 scraper.py
 ```
-### :mag_right: Functionalities
+### Functionalities
 Leaky provides the following capabilities:
 
-* **Search** : Search for leaked data.
-* **List of Leaks** : Access the directory of leaks (includes name, number of credentials, date, remove).
-* **Upload** : Integrate your own leak file into the mongodb instance and watch it reflect on the web service.
+* **Search** : As it says.
+* **Inventory** : Inventory of your breach files.
+* **Upload** : Add your own breach files.
 * **Links** : Useful links for data leaks.
 
 #### Search

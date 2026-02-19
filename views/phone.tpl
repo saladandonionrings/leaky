@@ -1,209 +1,187 @@
 % include('header.tpl')
 <style>
-    /* Base styles */
-    @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap");
-    * {
-        font-family: "JetBrains Mono", monospace;
-    }
+    /* Harmonisation avec le design premium 2026 */
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap");
+
+    * { font-family: 'Inter', sans-serif; }
 
     body {
-        background-color: #000000;
-        color: #FFFFFF;
+        background-color: #050505;
+        color: #e0e0e0;
     }
+
     .container {
         max-width: 1400px;
-        padding: 20px;
-    }
-    /* Button styles */
-    .btn-glow:hover {
-        box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-    }
-    .pages {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin: 20px 0;
-        font-size: 16px;
+        padding: 40px 20px;
     }
 
-    .prev-page, .next-page {
-        background-color: #444444;
-        border: 1px solid #333333;
-        border-radius: 8px;
-        padding: 8px 16px;
-        color: white;
-        text-decoration: none;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-        margin: 0 10px;
+    /* Carte de recherche centrale */
+    .search-container {
+        background: #0f0f0f;
+        border: 1px solid #1e1e1e;
+        border-radius: 20px;
+        padding: 40px;
+        max-width: 800px;
+        margin: 0 auto 50px auto;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        text-align: center;
     }
 
-    .prev-page:hover, .next-page:hover {
-        background-color: #555555;
+    .lookup-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: #ffffff;
     }
 
-    .prev-page:disabled, .next-page:disabled {
-        cursor: not-allowed;
-        background-color: #333333;
-        color: #777777;
+    .stats-text {
+        color: #888;
+        margin-bottom: 30px;
+        font-size: 1.1rem;
+    }
+
+    .text-red-500 {
+        color: #ff4d4d !important;
+        font-weight: 700;
+    }
+
+    /* Champ de saisie stylisé */
+    #search {
+        background-color: #121212 !important;
+        border: 1px solid #2a2a2a !important;
+        border-radius: 12px !important;
+        color: white !important;
+        padding: 15px 20px !important;
+        font-family: 'JetBrains Mono', monospace !important;
+        font-size: 18px;
+        width: 100% !important;
+        transition: all 0.3s ease;
+        outline: none;
+        text-align: center;
+    }
+
+    #search:focus {
+        border-color: #7F0000 !important;
+        box-shadow: 0 0 0 4px rgba(127, 0, 0, 0.15);
+        background-color: #161616 !important;
     }
 
     .btn {
-        background-color: #5d000d;
-        border: 1px solid #333333;
-        border-radius: 8px;
-        padding: 12px 20px;
+        background: linear-gradient(135deg, #7F0000 0%, #4d0000 100%) !important;
+        border: none !important;
+        border-radius: 12px !important;
+        padding: 14px 50px !important;
+        font-weight: 600 !important;
+        text-transform: uppercase;
+        letter-spacing: 1px;
         color: white;
         cursor: pointer;
-        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        transition: all 0.3s ease !important;
+        margin-top: 25px;
     }
 
     .btn:hover {
-        background-color: #3a0516;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(127, 0, 0, 0.4);
     }
 
-    .export-btn {
-        text-decoration: none;
-        padding: 10px 16px;
-        font-size: 15px;
-        background-color: #FF5555;
-        border: none;
-        color: #FFFFFF;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-        box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-        margin-left: auto;
+    /* Tableau de résultats */
+    .results-card {
+        background: #0f0f0f;
+        border: 1px solid #1e1e1e;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     }
 
-    .export-btn:hover {
-        background-color: #FF8888;
-    }
-
-    /* Table styles */
     table {
         width: 100%;
-        border-collapse: collapse;
-        color: #FFFFFF;
-    }
-
-    th, td {
-        padding: 12px;
-        text-align: left;
-        color: #FFFFFF;
-        border-bottom: 1px solid #333333;
+        border-collapse: separate;
+        border-spacing: 0;
     }
 
     th {
-        background-color: #000000;
-        font-weight: 600;
+        background-color: #161616 !important;
+        color: #666 !important;
+        font-size: 0.75rem !important;
         text-transform: uppercase;
-        border-bottom: 2px solid #444444;
+        letter-spacing: 0.1em;
+        padding: 18px 25px !important;
+        border-bottom: 1px solid #222 !important;
     }
 
-    tr:nth-child(even) {
-        background-color: #222222;
+    td {
+        padding: 16px 25px !important;
+        border-bottom: 1px solid #161616 !important;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 1rem;
+        color: #ccc;
     }
 
-    tr:hover {
-        background-color: #333333;
+    .phone-cell {
+        color: #ffaa00 !important; /* Couleur or pour les numéros */
+        font-weight: 600;
     }
 
-    .table-cell-content {
-        white-space: normal;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-        max-width: 300px;
-    }
-
-    /* Pagination styles */
-    .pagination-link {
-        background-color: #444444;
-        border: 1px solid #333333;
-        border-radius: 8px;
-        padding: 8px 16px;
-        color: white;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-
-    .pagination-link:hover {
-        background-color: #555555;
+    tr:hover td {
+        background-color: rgba(255, 255, 255, 0.02) !important;
+        color: #fff;
     }
 
     .pagination-container {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 20px;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 30px;
     }
-
-    #search {
-        background-color: #222222;
-        border: 1px solid #333333;
-        border-radius: 8px;
-        color: white;
-        padding: 12px;
-        font-size: 16px;
-        width: 50%;  /* Set width to 50% */
-    }
-
-    /* Ensure full width for smaller screens */
-    @media (max-width: 768px) {
-        #search {
-            width: 100%;
-        }
-    }
-
-    #search:focus {
-        outline: none;
-        border-color: #444444;
-    }
-
 </style>
 
-<div class="flex flex-col items-center bg-[#111111] text-white py-8 px-6 rounded-xl shadow-lg">
-  <h4 class="text-3xl font-semibold mb-4">Phone Lookup</h4>
-  <p class="text-lg mb-4">Search within <b class="text-red-500">{{ count }}</b> phone numbers</p>
-  <form id="searchForm" method="GET" action="/phone" class="w-full max-w-lg">
-    <div class="mb-6">
-      <label for="search" class="block text-sm font-medium text-gray-300 mb-2">Phone number:</label><br>
-      <input id="search" name="search" type="text" placeholder="(609) 415-6122"
-             class="block w-full px-4 py-2 text-lg text-gray-300 bg-black border border-gray-700 rounded-md shadow-sm focus:ring focus:ring-gray-800 focus:outline-none">
+<div class="container">
+    <div class="search-container">
+        <h4 class="lookup-title">Phone Lookup</h4>
+        <p class="stats-text">Search within <b class="text-red-500">{{ count }}</b> indexed phone numbers</p>
+        
+        <form id="searchForm" method="GET" action="/phone">
+            <div class="mb-4 text-left">
+                <label for="search" class="small text-uppercase tracking-wider text-gray-500 mb-2 d-block text-center">Enter Number</label>
+                <input id="search" name="search" type="text" placeholder="(609) 415-6122" required>
+            </div>
+            <input type="submit" value="Lookup" class="btn" />
+        </form>
     </div>
-    <div class="w-full mt-4">
-        <input type="submit" value="Lookup" class="btn" />
+
+    % if query:
+    <div class="max-w-5xl mx-auto">
+        % if results:
+        <div class="results-card">
+            <div class="table-responsive">
+                <table class="w-full">
+                    <thead>
+                        <tr>
+                            <th>Phone Number</th>
+                            <th>Leak Source</th>
+                            <th>Discovery Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        % for result in results:
+                        <tr>
+                            <td class="phone-cell">{{ result['phone'] }}</td>
+                            <td class="opacity-75">{{ result['leak_name'] }}</td>
+                            <td class="small opacity-60">{{ result['leak_date'] }}</td>
+                        </tr>
+                        % end
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        % else:
+        <div class="text-center py-5">
+            <p class="text-gray-500 italic">No records found for this phone number.</p>
+        </div>
+        % end
     </div>
-  </form>
+    % end
 </div>
 
-% if query:
-  <div class="mt-8 max-w-5xl mx-auto">
-    % if results:
-      <div class="overflow-x-auto rounded-lg border border-gray-800 shadow-md">
-        <table class="w-full table-fixed">
-          <thead class="bg-black sticky top-0">
-            <tr>
-              <th class="w-1/3 py-3 px-6 text-left text-gray-400 font-normal text-lg border-b border-gray-800">Phone Number</th>
-              <th class="w-1/3 py-3 px-6 text-left text-gray-400 font-normal text-lg border-b border-gray-800">Leak Name</th>
-              <th class="w-1/3 py-3 px-6 text-left text-gray-400 font-normal text-lg border-b border-gray-800">Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            % for result in results:
-            <tr class="border-b border-gray-800 hover:bg-gray-900">
-              <td class="py-3 px-6 text-gray-300">{{ result['phone'] }}</td>
-              <td class="py-3 px-6 text-gray-300">{{ result['leak_name'] }}</td>
-              <td class="py-3 px-6 text-gray-300">{{ result['leak_date'] }}</td>
-            </tr>
-            % end
-          </tbody>
-        </table>
-      </div>
-    % else:
-      <p class="text-gray-400 text-center mt-4">No results found.</p>
-    % end
-  </div>
-% end
-
 % include('footer.tpl')
-

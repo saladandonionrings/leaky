@@ -1,6 +1,13 @@
 #!/bin/bash
 set -e  # Stops the script if errors
 
+# Common errors Mongodb
+echo "> Checking if mongodb has no errors"
+sudo mkdir -p /var/log/mongodb
+sudo chown -R mongodb:mongodb /var/log/mongodb
+sudo chmod -R 755 /var/log/mongodb
+sudo systemctl restart mongod
+
 # URI MongoDB
 MONGO_URI=${MONGO_URI:-"mongodb://127.0.0.1:27017/DBleaks"}
 
