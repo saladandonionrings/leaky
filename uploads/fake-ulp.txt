@@ -1,0 +1,10 @@
+https://admin.leaky.io:admin:P4ssw0rd_2026!
+https://webmail.leaky.io:j.doe@leaky.io:Summer2025*
+https://vpn.leaky.io:vpn_user:SecureAccess#99
+https://dev-api.leaky.io:developer_tmp:ghp_InternalToken_882
+https://hr-portal.leaky.io:m.smith:Password123
+https://git.leaky.io:git_admin:SuperSecretGit_2026
+https://staging.leaky.io:tester:test_account_ignore
+https://db-monitor.leaky.io:root:SQL_Admin_Access_!#
+https://cloud-storage.leaky.io:backup_svc:B4ckup_S3rvice_Key
+https://internal.leaky.io:guest_access:Welcome2026

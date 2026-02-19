@@ -1,0 +1,9 @@
+data,leak_name,leak_date
+"user_id:1001|ip:192.168.1.1|action:login_success","Internal_Log_Leaky","2026"
+"email:ceo@leaky.io|salary:150000|bonus:20000","Finance_Export_Fake","2025"
+"full_name:Jean Dupont|address:12 rue de la Paix, Paris|zip:75002","YellowPages_Leak_2026","2026"
+"api_key:sk_live_51MzX2L09WqR1mZp0|status:active","Dev_Config_Dump","2024"
+"order_id:7782|customer:Alice Smith|cc_last4:4242","Ecom_Database_Misc","2026"
+"database_user:db_admin|hash:$2y$10$92IXUNpkjO0rOQ5byMi.Ye","SQL_Structure_Test","2025"
+"ssh_key:ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC8...","Infra_Secure_Backup","2026"
+"phone:+33611223344|provider:Orange|contract_id:A992","Telecom_Export_CSV","2024"
